@@ -1,16 +1,21 @@
-export default function Home() {
+import { DemoRequestForm } from "@/components/DemoRequestForm";
+import { Nav } from "@/components/Nav";
+
+const DEMO_MAILTO =
+  "mailto:hello@serenescene.app?subject=Serene%20Scene%20Demo%20Request";
+
+type HomeProps = {
+  searchParams: Promise<{ demoSent?: string; demoError?: string }>;
+};
+
+export default async function Home({ searchParams }: HomeProps) {
+  const params = await searchParams;
+  const demoSent = params.demoSent === "1";
+  const demoError = params.demoError;
+
   return (
     <main className="min-h-screen bg-[#F8FAFB] text-[#1B3A5B]">
-      {/* Nav */}
-      <nav className="flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
-        <div className="text-2xl font-bold">Serene Scene</div>
-        <a
-          href="#contact"
-          className="bg-[#E85A9B] text-white px-5 py-2 rounded-full font-semibold hover:opacity-90"
-        >
-          Request Demo
-        </a>
-      </nav>
+      <Nav />
 
       {/* Hero */}
       <section className="max-w-5xl mx-auto px-8 py-24 text-center">
@@ -73,7 +78,7 @@ export default function Home() {
             </ul>
             <div className="text-center mt-8">
               <a
-                href="#contact"
+                href={DEMO_MAILTO}
                 className="inline-block bg-[#E85A9B] text-white px-8 py-3 rounded-full font-semibold hover:opacity-90"
               >
                 Get Started
@@ -98,6 +103,41 @@ export default function Home() {
         >
           hello@serenescene.app
         </a>
+      </section>
+
+      {/* Demo request */}
+      <section
+        id="demo-request"
+        className="border-t border-[#1B3A5B]/10 bg-white py-20"
+        aria-labelledby="demo-request-heading"
+      >
+        <div className="mx-auto max-w-3xl px-8 text-center">
+          <h2
+            id="demo-request-heading"
+            className="mb-3 text-3xl font-bold md:text-4xl"
+          >
+            Request a demo
+          </h2>
+          <p className="mb-10 text-lg text-[#1B3A5B]/70">
+            Tell us about your practice and we&apos;ll follow up shortly.
+          </p>
+          {demoSent ? (
+            <p className="rounded-lg bg-[#5BC0DE]/15 px-4 py-3 text-[#1B3A5B]">
+              Thanks — your demo request was received.
+            </p>
+          ) : null}
+          {demoError === "missing" ? (
+            <p className="mb-6 rounded-lg bg-[#E85A9B]/15 px-4 py-3 text-[#1B3A5B]">
+              Please fill in practice name, contact name, and email.
+            </p>
+          ) : null}
+          {demoError === "send" ? (
+            <p className="mb-6 rounded-lg bg-[#E85A9B]/15 px-4 py-3 text-[#1B3A5B]">
+              Something went wrong sending your request. Please try again or email us directly.
+            </p>
+          ) : null}
+          {!demoSent ? <DemoRequestForm /> : null}
+        </div>
       </section>
 
       {/* Footer */}
