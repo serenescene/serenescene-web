@@ -1,0 +1,28 @@
+---
+description: Serene Scene Web - core conventions
+alwaysApply: true
+---
+
+# Serene Scene Web
+
+Marketing site (www.serenescene.app) and practice dashboard (app.serenescene.app — coming soon).
+
+## Stack
+- Next.js 15 App Router, TypeScript, Tailwind v4
+- Deployed on Vercel
+- Auth via API at api.serenescene.app
+
+## Brand
+- Colors: Navy #1B3A5B, Sky #5BC0DE, Pink #E85A9B, Yellow #F4D35E, BG #F8FAFB
+- Friendly, calm, professional. NOT clinical.
+- Copy voice: warm, plainspoken. No medical claims. "Comfort" and "calm" only.
+
+## Compliance hard rules
+- Never use words: "pain", "anxiety treatment", "therapeutic", "medical device", "clinical"
+- OK: "comfort", "calm", "distraction", "experience", "relaxation"
+- This is a wellness product. No FDA claims.
+
+## Coding rules
+- Server components by default. "use client" only when needed.
+- No external UI libraries (no shadcn, no MUI). Hand-rolled Tailwind.
+- Images: next/image with explicit width/height.
