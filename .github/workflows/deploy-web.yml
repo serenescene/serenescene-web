@@ -1,0 +1,16 @@
+# After a push to main, hits Vercel’s deploy hook (GET).
+# Add repository secret VERCEL_DEPLOY_HOOK_URL from Vercel → Project → Settings → Git → Deploy Hooks.
+
+name: Deploy Web
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  vercel-hook:
+    runs-on: ubuntu-latest
+    if: ${{ secrets.VERCEL_DEPLOY_HOOK_URL != '' }}
+    steps:
+      - name: Trigger Vercel deploy
+        run: curl -fsS "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"
