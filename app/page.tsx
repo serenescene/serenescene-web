@@ -27,12 +27,20 @@ export default async function Home({ searchParams }: HomeProps) {
         <p className="text-xl md:text-2xl text-[#1B3A5B]/70 max-w-2xl mx-auto mb-10">
           Serene Scene transforms the dental chair into an immersive escape — improving patient comfort and your practice&apos;s satisfaction ratings.
         </p>
-        <a
-          href="#contact"
-          className="inline-block bg-[#E85A9B] text-white px-8 py-4 rounded-full text-lg font-semibold hover:opacity-90"
-        >
-          Request a Demo
-        </a>
+        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <a
+            href="/practice/signup"
+            className="inline-block bg-[#2B8CB8] text-white px-8 py-4 rounded-full text-lg font-semibold hover:opacity-90"
+          >
+            Get started free
+          </a>
+          <a
+            href="#contact"
+            className="inline-block bg-[#E85A9B] text-white px-8 py-4 rounded-full text-lg font-semibold hover:opacity-90"
+          >
+            Request a Demo
+          </a>
+        </div>
       </section>
 
       {/* How it works */}

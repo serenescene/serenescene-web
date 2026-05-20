@@ -25,12 +25,26 @@ export function Nav() {
           />
         )}
       </div>
-      <a
-        href="#contact"
-        className="bg-[#E85A9B] text-white px-5 py-2 rounded-full font-semibold hover:opacity-90"
-      >
-        Request Demo
-      </a>
+      <div className="flex items-center gap-3">
+        <a
+          href="/practice/login"
+          className="text-[#1B3A5B] font-semibold hover:text-[#2B8CB8]"
+        >
+          Practice login
+        </a>
+        <a
+          href="/practice/signup"
+          className="bg-[#2B8CB8] text-white px-5 py-2 rounded-full font-semibold hover:opacity-90"
+        >
+          Get started
+        </a>
+        <a
+          href="#contact"
+          className="bg-[#E85A9B] text-white px-5 py-2 rounded-full font-semibold hover:opacity-90"
+        >
+          Request Demo
+        </a>
+      </div>
     </nav>
   );
 }
