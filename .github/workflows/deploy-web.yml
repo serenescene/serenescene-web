@@ -10,7 +10,13 @@ on:
 jobs:
   vercel-hook:
     runs-on: ubuntu-latest
-    if: ${{ secrets.VERCEL_DEPLOY_HOOK_URL != '' }}
     steps:
       - name: Trigger Vercel deploy
-        run: curl -fsS "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$VERCEL_DEPLOY_HOOK_URL" ]; then
+            echo "VERCEL_DEPLOY_HOOK_URL not set — skip (configure in GitHub repo secrets)."
+            exit 0
+          fi
+          curl -fsS "$VERCEL_DEPLOY_HOOK_URL"
