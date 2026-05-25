@@ -1,4 +1,6 @@
 import { redirect } from "next/navigation";
+import { GoogleReviewLinkHelp } from "@/components/google-review-link-help";
+import { GoogleReviewRecommendedWarning } from "@/components/google-review-recommended-warning";
 import { PracticeShell } from "@/components/practice-shell";
 import { suggestedExperienceTitle } from "@/lib/experience-title";
 import { getPracticeSession } from "@/lib/practice-auth";
@@ -25,13 +27,13 @@ export default async function PracticeOnboardingPage({ searchParams }: PageProps
     error === "title"
       ? "Add a name for your patient experience."
       : error === "save"
-        ? "Could not save setup. Check your review link format (https://...) and try again."
+        ? "Could not save setup. If you added a link, use https://g.page/... or google.com."
         : null;
 
   return (
     <PracticeShell
       title="Quick setup"
-      subtitle="Two steps — how patients see your experience, and where happy patients leave a Google review. You keep your existing Google listing; we don't create a new one."
+      subtitle="Name your chairside experience. A Google review link is optional but highly recommended."
     >
       {message ? (
         <div className="mb-4 rounded-2xl bg-[#E85A9B]/15 px-4 py-3 text-sm font-bold">{message}</div>
@@ -52,36 +54,31 @@ export default async function PracticeOnboardingPage({ searchParams }: PageProps
             />
           </label>
           <p className="mt-2 text-xs font-bold text-[#1B3A5B]/55">
-            Example: &quot;Dr. Bob&apos;s Serene Scene Chairside XR Experience&quot; — this is your
-            brand inside Serene Scene, not a new Google page.
+            Example: &quot;Dr. Smith&apos;s Serene Scene Chairside XR Experience&quot;
           </p>
-        </div>
-
-        <div className="rounded-2xl bg-[#5BC0DE]/15 px-4 py-3 text-sm font-bold text-[#1B3A5B]">
-          Preview: Patients will be invited to rate their visit after calming content, then open
-          your real Google review page in one tap.
         </div>
 
         <div>
           <p className="text-xs font-extrabold uppercase tracking-wide text-[#1B3A5B]/50">
-            Step 2 · Google reviews
+            Step 2 · Google reviews (optional)
           </p>
-          <label className="mt-2 block text-sm font-extrabold">
+          <GoogleReviewRecommendedWarning className="mt-2" />
+          <label className="mt-3 block text-sm font-extrabold">
             Your Google review link
             <input
               name="googleReviewUrl"
               type="url"
+              defaultValue={session.googleReviewUrl ?? ""}
               placeholder="https://g.page/r/your-practice/review"
               className="mt-1 w-full rounded-2xl border border-[#1B3A5B]/20 px-4 py-3 outline-none focus:border-[#5BC0DE]"
             />
           </label>
-          <p className="mt-2 text-xs font-bold text-[#1B3A5B]/55">
-            In Google Business Profile: open your location → Share review form → copy link. Paste
-            your existing link — we do not replace your Google listing.
-          </p>
-          <label className="mt-3 flex items-center gap-2 text-sm font-bold">
-            <input type="checkbox" name="skipReviewUrl" className="h-4 w-4" />
-            I&apos;ll add my Google review link later
+          <GoogleReviewLinkHelp />
+          <label className="mt-3 flex items-start gap-2 text-sm font-bold">
+            <input type="checkbox" name="skipReviewUrl" className="mt-1 h-4 w-4" />
+            <span>
+              Skip for now — I understand reviews work best when this link is added later
+            </span>
           </label>
         </div>
 

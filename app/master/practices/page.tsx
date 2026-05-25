@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { FeatureFlagFields } from "@/components/feature-flag-fields";
 import { MasterNav } from "@/components/master-nav";
 import type { FeatureFlags } from "@/lib/feature-flags";
+import { SUBSCRIPTION_STATUSES, SUBSCRIPTION_STATUS_LABELS } from "@/lib/subscription-tiers";
 import { isMasterDashboardAuthenticated } from "@/lib/master-auth";
 import { createPractice, updatePractice } from "./actions";
 
@@ -10,6 +11,9 @@ type Practice = {
   name: string;
   email: string;
   googleReviewUrl: string | null;
+  onboardingCompletedAt: string | null;
+  hasGoogleReviewUrl: boolean;
+  isGoLiveReady: boolean;
   stripeCustomerId: string | null;
   subscriptionStatus: string;
   effectiveFeatureFlags: FeatureFlags;
@@ -79,7 +83,7 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
             </p>
             <h1 className="mt-2 text-4xl font-extrabold">Practices</h1>
             <p className="mt-3 max-w-2xl text-[#F8FAFB]/70">
-              Onboard dental offices, track subscription status, and tie devices to the right account.
+              Onboard dental offices. Google review links are optional but highly recommended.
             </p>
           </div>
           <div className="rounded-2xl bg-white/10 px-5 py-4 text-sm font-bold">
@@ -142,22 +146,23 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
                 defaultValue="trial"
                 className="mt-1 w-full rounded-xl border border-[#1B3A5B]/20 px-3 py-2"
               >
-                <option value="trial">trial</option>
-                <option value="active">active</option>
-                <option value="past_due">past_due</option>
-                <option value="canceled">canceled</option>
-                <option value="inactive">inactive</option>
+                {SUBSCRIPTION_STATUSES.map((status) => (
+                  <option key={status} value={status}>
+                    {SUBSCRIPTION_STATUS_LABELS[status]}
+                  </option>
+                ))}
               </select>
             </label>
             <label className="block text-sm font-bold md:col-span-2">
-              Google review URL (shown on tablet after visit)
+              Google review URL (optional, highly recommended)
               <input
                 name="googleReviewUrl"
+                type="url"
                 placeholder="https://g.page/r/your-practice/review"
                 className="mt-1 w-full rounded-xl border border-[#1B3A5B]/20 px-3 py-2"
               />
               <span className="mt-1 block text-xs font-bold text-[#1B3A5B]/55">
-                Patients tap experience buttons, then open this link to leave a Google review.
+                Optional — patients can skip ratings. Most practices add this for one-tap Google reviews.
               </span>
             </label>
             <div className="md:col-span-2">
@@ -185,9 +190,25 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
                 className="border-b border-[#1B3A5B]/10 px-5 py-5 last:border-b-0"
               >
                 <input type="hidden" name="id" value={practice.id} />
-                <div className="mb-3 text-xs text-[#1B3A5B]/55">
-                  {practice.email} · {practice.deviceCount} device(s) · joined{" "}
-                  {formatDate(practice.createdAt)}
+                <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-[#1B3A5B]/55">
+                  <span>
+                    {practice.email} · {practice.deviceCount} device(s) · joined{" "}
+                    {formatDate(practice.createdAt)}
+                  </span>
+                  {practice.subscriptionStatus === "legacy" ? (
+                    <span className="rounded-full bg-[#5BC0DE]/25 px-2 py-0.5 font-extrabold text-[#1B3A5B]">
+                      Legacy demo
+                    </span>
+                  ) : null}
+                  {practice.hasGoogleReviewUrl || practice.isGoLiveReady ? (
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 font-extrabold text-emerald-800">
+                      Google link set
+                    </span>
+                  ) : (
+                    <span className="rounded-full bg-amber-100 px-2 py-0.5 font-extrabold text-amber-900">
+                      Highly recommended: add Google link
+                    </span>
+                  )}
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
                   <label className="block text-sm font-bold">
@@ -205,17 +226,18 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
                       defaultValue={practice.subscriptionStatus}
                       className="mt-1 w-full rounded-xl border border-[#1B3A5B]/20 px-3 py-2"
                     >
-                      <option value="trial">trial</option>
-                      <option value="active">active</option>
-                      <option value="past_due">past_due</option>
-                      <option value="canceled">canceled</option>
-                      <option value="inactive">inactive</option>
+                      {SUBSCRIPTION_STATUSES.map((status) => (
+                        <option key={status} value={status}>
+                          {SUBSCRIPTION_STATUS_LABELS[status]}
+                        </option>
+                      ))}
                     </select>
                   </label>
                   <label className="block text-sm font-bold md:col-span-2">
-                    Google review URL
+                    Google review URL (optional, highly recommended)
                     <input
                       name="googleReviewUrl"
+                      type="url"
                       defaultValue={practice.googleReviewUrl ?? ""}
                       placeholder="https://g.page/r/your-practice/review"
                       className="mt-1 w-full rounded-xl border border-[#1B3A5B]/20 px-3 py-2"
@@ -232,7 +254,11 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
                 </div>
                 <FeatureFlagFields
                   effective={practice.effectiveFeatureFlags}
-                  legend="Practice feature overrides"
+                  legend={
+                    practice.subscriptionStatus === "legacy"
+                      ? "Legacy demo toggles (all on by default; practice can edit in portal)"
+                      : "Practice feature overrides"
+                  }
                 />
                 <button
                   type="submit"

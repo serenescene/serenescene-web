@@ -3,9 +3,15 @@ import { FEATURE_KEYS, FEATURE_LABELS, type FeatureFlags } from "@/lib/feature-f
 type FeatureFlagFieldsProps = {
   effective: FeatureFlags;
   legend?: string;
+  /** Shown on practice portal for Legacy (demo) tier */
+  variant?: "master" | "legacy-demo";
 };
 
-export function FeatureFlagFields({ effective, legend }: FeatureFlagFieldsProps) {
+export function FeatureFlagFields({
+  effective,
+  legend,
+  variant = "master",
+}: FeatureFlagFieldsProps) {
   return (
     <fieldset className="mt-4 rounded-2xl border border-[#1B3A5B]/15 bg-[#F8FAFB] p-4">
       {legend ? (
@@ -34,7 +40,9 @@ export function FeatureFlagFields({ effective, legend }: FeatureFlagFieldsProps)
         ))}
       </ul>
       <p className="mt-3 text-xs font-bold text-[#1B3A5B]/50">
-        Uncheck to disable for this scope. Tablets pick up changes on next app resume.
+        {variant === "legacy-demo"
+          ? "Legacy demo tier: all features start enabled. Uncheck to try the app with features off. Tablets apply changes when the app is reopened."
+          : "Uncheck to disable for this practice. Tablets pick up changes on next app resume."}
       </p>
     </fieldset>
   );

@@ -22,7 +22,10 @@ export async function updatePracticeProfile(formData: FormData) {
   });
 
   if ("error" in result) {
-    redirect("/practice/dashboard?error=save");
+    const err = result.error.toLowerCase();
+    redirect(
+      err.includes("google") ? "/practice/dashboard?error=review" : "/practice/dashboard?error=save",
+    );
   }
 
   revalidatePath("/practice/dashboard");

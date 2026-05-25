@@ -35,5 +35,9 @@ export async function completePracticeOnboarding(formData: FormData) {
   }
 
   revalidatePath("/practice");
-  redirect("/practice/dashboard?welcome=1");
+  redirect(
+    skipReviewUrl || !googleReviewUrl
+      ? "/practice/dashboard?welcome=1&review=skipped"
+      : "/practice/dashboard?welcome=1",
+  );
 }

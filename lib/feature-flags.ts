@@ -9,6 +9,13 @@ export type FeatureKey = (typeof FEATURE_KEYS)[number];
 
 export type FeatureFlags = Record<FeatureKey, boolean>;
 
+export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
+  reviewCapture: true,
+  kioskAutoplay: true,
+  deviceTelemetry: true,
+  kioskLockTask: true,
+};
+
 export const FEATURE_LABELS: Record<FeatureKey, string> = {
   reviewCapture: "Post-visit Google review flow",
   kioskAutoplay: "Autoplay when AR glasses connect",

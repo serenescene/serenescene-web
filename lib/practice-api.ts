@@ -1,3 +1,5 @@
+import type { FeatureFlags } from "@/lib/feature-flags";
+
 export type PracticeSession = {
   id: string;
   name: string;
@@ -6,7 +8,12 @@ export type PracticeSession = {
   experienceTitle: string | null;
   onboardingCompletedAt: string | null;
   needsOnboarding: boolean;
+  hasGoogleReviewUrl?: boolean;
+  isGoLiveReady?: boolean;
   subscriptionStatus: string;
+  featureFlags?: FeatureFlags;
+  canEditFeatureFlags?: boolean;
+  isLegacyTier?: boolean;
 };
 
 function apiBaseUrl() {

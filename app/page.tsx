@@ -150,7 +150,14 @@ export default async function Home({ searchParams }: HomeProps) {
 
       {/* Footer */}
       <footer className="border-t border-[#1B3A5B]/10 py-8 text-center text-sm text-[#1B3A5B]/50">
-        © {new Date().getFullYear()} Envision Yourself Empowered, LLC · Serene Scene
+        <p>
+          <a href="/safety" className="font-semibold text-[#2B8CB8] underline">
+            Safety &amp; use information
+          </a>
+        </p>
+        <p className="mt-2">
+          © {new Date().getFullYear()} Envision Yourself Empowered, LLC · Serene Scene
+        </p>
       </footer>
     </main>
   );
