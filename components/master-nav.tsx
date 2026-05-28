@@ -4,13 +4,14 @@ const links = [
   { href: "/master/content", label: "Content" },
   { href: "/master/practices", label: "Practices" },
   { href: "/master/devices", label: "Devices" },
+  { href: "/master/feedback", label: "Feedback" },
   { href: "/master/settings", label: "Features" },
 ];
 
 export function MasterNav({
   active,
 }: {
-  active: "content" | "practices" | "devices" | "settings";
+  active: "content" | "practices" | "devices" | "feedback" | "settings";
 }) {
   return (
     <nav className="flex flex-wrap gap-2">
@@ -19,6 +20,7 @@ export function MasterNav({
           (active === "content" && link.href.endsWith("/content")) ||
           (active === "practices" && link.href.endsWith("/practices")) ||
           (active === "devices" && link.href.endsWith("/devices")) ||
+          (active === "feedback" && link.href.endsWith("/feedback")) ||
           (active === "settings" && link.href.endsWith("/settings"));
         return (
           <Link
