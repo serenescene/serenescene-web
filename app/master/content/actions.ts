@@ -39,6 +39,10 @@ export async function updateContentItem(formData: FormData) {
     body: JSON.stringify({
       active: formData.get("active") === "true",
       visibility: formString(formData, "visibility"),
+      practiceIds: formData
+        .getAll("practiceIds")
+        .map((id) => String(id).trim())
+        .filter(Boolean),
       licenseStatus: formString(formData, "licenseStatus"),
       commercialUseAllowed: formData.get("commercialUseAllowed") === "true",
       attributionRequired: formData.get("attributionRequired") === "true",
@@ -55,6 +59,10 @@ export async function updateContentItem(formData: FormData) {
   });
 
   if (!res.ok) {
+    const body = (await res.json().catch(() => ({}))) as { error?: string };
+    if (body.error?.includes("at least one practice")) {
+      redirect("/master/content?error=assign-practices");
+    }
     redirect("/master/content?error=save");
   }
 

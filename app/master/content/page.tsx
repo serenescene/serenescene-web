@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { ContentPracticeAssign } from "@/components/content-practice-assign";
 import { MasterNav } from "@/components/master-nav";
 import { isMasterDashboardAuthenticated } from "@/lib/master-auth";
 import { updateContentItem } from "./actions";
@@ -24,6 +25,14 @@ type AdminContentItem = {
   licenseExpiresAt: string | null;
   licenseNotes: string | null;
   updatedAt: string;
+  assignedPracticeIds: string[];
+  assignedPractices: { id: string; name: string; email: string }[];
+};
+
+type PracticeOption = {
+  id: string;
+  name: string;
+  email: string;
 };
 
 export const dynamic = "force-dynamic";
@@ -31,6 +40,32 @@ export const dynamic = "force-dynamic";
 type AdminContentResponse = {
   items: AdminContentItem[];
 };
+
+async function loadPractices(): Promise<{
+  practices: PracticeOption[];
+  error: string | null;
+}> {
+  const baseUrl = process.env.SERENE_SCENE_API_BASE_URL;
+  const adminKey = process.env.SERENE_SCENE_ADMIN_API_KEY;
+
+  if (!baseUrl || !adminKey) {
+    return { practices: [], error: null };
+  }
+
+  try {
+    const res = await fetch(`${baseUrl.replace(/\/$/, "")}/admin/practices`, {
+      headers: { "x-admin-api-key": adminKey },
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      return { practices: [], error: null };
+    }
+    const data = (await res.json()) as { practices: PracticeOption[] };
+    return { practices: data.practices ?? [], error: null };
+  } catch {
+    return { practices: [], error: null };
+  }
+}
 
 async function loadContent(): Promise<{
   items: AdminContentItem[];
@@ -61,7 +96,12 @@ async function loadContent(): Promise<{
     }
 
     const data = (await res.json()) as AdminContentResponse;
-    return { items: data.items ?? [], error: null };
+    const items = (data.items ?? []).map((item) => ({
+      ...item,
+      assignedPracticeIds: item.assignedPracticeIds ?? [],
+      assignedPractices: item.assignedPractices ?? [],
+    }));
+    return { items, error: null };
   } catch {
     return {
       items: [],
@@ -103,7 +143,10 @@ export default async function MasterContentPage({
   }
 
   const params = await searchParams;
-  const { items, error } = await loadContent();
+  const [{ items, error }, { practices }] = await Promise.all([
+    loadContent(),
+    loadPractices(),
+  ]);
 
   return (
     <main className="min-h-screen bg-[#07111C] px-6 py-8 text-[#F8FAFB]">
@@ -136,7 +179,12 @@ export default async function MasterContentPage({
             Content item saved.
           </div>
         ) : null}
-        {params.error ? (
+        {params.error === "assign-practices" ? (
+          <div className="mb-6 rounded-2xl border border-[#E85A9B]/40 bg-[#E85A9B]/15 p-4 text-sm font-bold">
+            Client-specific content must be assigned to at least one practice.
+          </div>
+        ) : null}
+        {params.error && params.error !== "assign-practices" ? (
           <div className="mb-6 rounded-2xl border border-[#E85A9B]/40 bg-[#E85A9B]/15 p-4 text-sm font-bold">
             Could not save that content item. Please check the fields and try again.
           </div>
@@ -174,13 +222,25 @@ export default async function MasterContentPage({
                     >
                       {item.fileUrl}
                     </a>
-                    <span
-                      className={`mt-3 inline-flex rounded-full px-3 py-1 text-xs font-extrabold ${licenseBadgeClass(
-                        item.licenseStatus
-                      )}`}
-                    >
-                      {item.licenseStatus.replace(/_/g, " ")}
-                    </span>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span
+                        className={`inline-flex rounded-full px-3 py-1 text-xs font-extrabold ${licenseBadgeClass(
+                          item.licenseStatus
+                        )}`}
+                      >
+                        {item.licenseStatus.replace(/_/g, " ")}
+                      </span>
+                      <span className="inline-flex rounded-full bg-[#1B3A5B]/10 px-3 py-1 text-xs font-extrabold text-[#1B3A5B]/80">
+                        {item.visibility.replace(/_/g, " ")}
+                      </span>
+                    </div>
+                    {item.visibility === "client_specific" ? (
+                      <p className="mt-2 text-xs text-[#1B3A5B]/60">
+                        {item.assignedPractices.length > 0
+                          ? `Assigned: ${item.assignedPractices.map((p) => p.name).join(", ")}`
+                          : "No practices assigned yet"}
+                      </p>
+                    ) : null}
                   </div>
 
                   <div className="col-span-12 grid gap-3 sm:grid-cols-2 lg:col-span-4">
@@ -196,18 +256,11 @@ export default async function MasterContentPage({
                       </select>
                     </label>
 
-                    <label className="text-xs font-extrabold uppercase text-[#1B3A5B]/60">
-                      Visibility
-                      <select
-                        name="visibility"
-                        defaultValue={item.visibility}
-                        className="mt-1 w-full rounded-xl border border-[#1B3A5B]/15 px-3 py-2 normal-case text-[#1B3A5B]"
-                      >
-                        <option value="global">Global</option>
-                        <option value="client_specific">Client specific</option>
-                        <option value="internal">Internal</option>
-                      </select>
-                    </label>
+                    <ContentPracticeAssign
+                      practices={practices}
+                      assignedPracticeIds={item.assignedPracticeIds ?? []}
+                      initialVisibility={item.visibility}
+                    />
 
                     <label className="text-xs font-extrabold uppercase text-[#1B3A5B]/60">
                       License status
