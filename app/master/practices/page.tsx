@@ -4,7 +4,13 @@ import { MasterNav } from "@/components/master-nav";
 import type { FeatureFlags } from "@/lib/feature-flags";
 import { SUBSCRIPTION_STATUSES, SUBSCRIPTION_STATUS_LABELS } from "@/lib/subscription-tiers";
 import { isMasterDashboardAuthenticated } from "@/lib/master-auth";
-import { createPractice, updatePractice } from "./actions";
+import {
+  createPractice,
+  deactivatePractice,
+  deletePractice,
+  reactivatePractice,
+  updatePractice,
+} from "./actions";
 
 type Practice = {
   id: string;
@@ -18,6 +24,8 @@ type Practice = {
   subscriptionStatus: string;
   effectiveFeatureFlags: FeatureFlags;
   deviceCount: number;
+  active: boolean;
+  deactivatedAt: string | null;
   createdAt: string;
 };
 
@@ -43,7 +51,11 @@ async function loadPractices(): Promise<{ practices: Practice[]; error: string |
       return { practices: [], error: `Practices API returned ${res.status}.` };
     }
     const data = (await res.json()) as { practices: Practice[] };
-    return { practices: data.practices ?? [], error: null };
+    const practices = (data.practices ?? []).map((practice) => ({
+      ...practice,
+      active: practice.active ?? true,
+    }));
+    return { practices, error: null };
   } catch {
     return { practices: [], error: "Could not reach the Serene Scene API." };
   }
@@ -58,7 +70,13 @@ function formatDate(value: string) {
 }
 
 type PageProps = {
-  searchParams: Promise<{ saved?: string; error?: string }>;
+  searchParams: Promise<{
+    saved?: string;
+    error?: string;
+    deactivated?: string;
+    reactivated?: string;
+    deleted?: string;
+  }>;
 };
 
 export default async function MasterPracticesPage({ searchParams }: PageProps) {
@@ -101,9 +119,41 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
             Practice saved.
           </div>
         ) : null}
-        {params.error ? (
+        {params.deactivated === "1" ? (
+          <div className="mb-6 rounded-2xl border border-amber-400/40 bg-amber-400/15 p-4 text-sm font-bold">
+            Practice deactivated. Tablets can no longer sign in or load content.
+          </div>
+        ) : null}
+        {params.reactivated === "1" ? (
+          <div className="mb-6 rounded-2xl border border-emerald-400/40 bg-emerald-400/15 p-4 text-sm font-bold">
+            Practice reactivated.
+          </div>
+        ) : null}
+        {params.deleted === "1" ? (
+          <div className="mb-6 rounded-2xl border border-emerald-400/40 bg-emerald-400/15 p-4 text-sm font-bold">
+            Practice permanently deleted.
+          </div>
+        ) : null}
+        {params.error === "delete-active" ? (
           <div className="mb-6 rounded-2xl border border-[#E85A9B]/40 bg-[#E85A9B]/15 p-4 text-sm font-bold">
-            Could not save practice. Check the form and try again.
+            Deactivate the practice before deleting it permanently.
+          </div>
+        ) : null}
+        {params.error === "delete-confirm" ? (
+          <div className="mb-6 rounded-2xl border border-[#E85A9B]/40 bg-[#E85A9B]/15 p-4 text-sm font-bold">
+            Practice name did not match. Deletion was cancelled.
+          </div>
+        ) : null}
+        {params.error &&
+        !["delete-active", "delete-confirm"].includes(params.error ?? "") ? (
+          <div className="mb-6 rounded-2xl border border-[#E85A9B]/40 bg-[#E85A9B]/15 p-4 text-sm font-bold">
+            {params.error === "deactivate"
+              ? "Could not deactivate that practice."
+              : params.error === "reactivate"
+                ? "Could not reactivate that practice."
+                : params.error === "delete"
+                  ? "Could not delete that practice."
+                  : "Could not save practice. Check the form and try again."}
           </div>
         ) : null}
 
@@ -184,17 +234,27 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
             <div className="px-5 py-12 text-center text-[#1B3A5B]/60">No practices yet.</div>
           ) : (
             practices.map((practice) => (
-              <form
+              <div
                 key={practice.id}
-                action={updatePractice}
-                className="border-b border-[#1B3A5B]/10 px-5 py-5 last:border-b-0"
+                className={`border-b border-[#1B3A5B]/10 px-5 py-5 last:border-b-0 ${
+                  practice.active ? "" : "bg-[#FFF8F0]"
+                }`}
               >
+                <form action={updatePractice}>
                 <input type="hidden" name="id" value={practice.id} />
                 <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-[#1B3A5B]/55">
                   <span>
                     {practice.email} · {practice.deviceCount} device(s) · joined{" "}
                     {formatDate(practice.createdAt)}
                   </span>
+                  {!practice.active ? (
+                    <span className="rounded-full bg-rose-100 px-2 py-0.5 font-extrabold text-rose-800">
+                      Deactivated
+                      {practice.deactivatedAt
+                        ? ` · ${formatDate(practice.deactivatedAt)}`
+                        : ""}
+                    </span>
+                  ) : null}
                   {practice.subscriptionStatus === "legacy" ? (
                     <span className="rounded-full bg-[#5BC0DE]/25 px-2 py-0.5 font-extrabold text-[#1B3A5B]">
                       Legacy demo
@@ -267,6 +327,53 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
                   Save practice
                 </button>
               </form>
+
+              <div className="mt-4 flex flex-wrap gap-3 border-t border-[#1B3A5B]/10 pt-4">
+                {practice.active ? (
+                  <form action={deactivatePractice}>
+                    <input type="hidden" name="id" value={practice.id} />
+                    <button
+                      type="submit"
+                      className="rounded-full border border-amber-500/50 bg-amber-50 px-4 py-2 text-sm font-extrabold text-amber-900"
+                    >
+                      Deactivate practice
+                    </button>
+                  </form>
+                ) : (
+                  <form action={reactivatePractice}>
+                    <input type="hidden" name="id" value={practice.id} />
+                    <button
+                      type="submit"
+                      className="rounded-full border border-emerald-500/50 bg-emerald-50 px-4 py-2 text-sm font-extrabold text-emerald-900"
+                    >
+                      Reactivate practice
+                    </button>
+                  </form>
+                )}
+
+                {!practice.active ? (
+                  <form action={deletePractice} className="flex flex-wrap items-end gap-2">
+                    <input type="hidden" name="id" value={practice.id} />
+                    <input type="hidden" name="expectedName" value={practice.name} />
+                    <label className="text-xs font-bold text-[#1B3A5B]/70">
+                      Type practice name to delete permanently
+                      <input
+                        name="confirmName"
+                        required
+                        placeholder={practice.name}
+                        className="mt-1 block w-56 rounded-xl border border-rose-300 px-3 py-2 text-sm"
+                      />
+                    </label>
+                    <button
+                      type="submit"
+                      className="rounded-full bg-rose-600 px-4 py-2 text-sm font-extrabold text-white"
+                    >
+                      Delete permanently
+                    </button>
+                  </form>
+                ) : null}
+              </div>
+              </div>
             ))
           )}
         </div>
