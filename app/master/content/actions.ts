@@ -54,10 +54,13 @@ export async function updateContentItem(formData: FormData) {
       attributionText: formString(formData, "attributionText"),
       licenseNotes: formString(formData, "licenseNotes"),
       licenseExpiresAt: formString(formData, "licenseExpiresAt"),
-      playlistPlayCount: Number.parseInt(
-        String(formData.get("playlistPlayCount") ?? "1"),
-        10,
-      ),
+      playlistPlayCount: (() => {
+        const parsed = Number.parseInt(
+          String(formData.get("playlistPlayCount") ?? "1"),
+          10,
+        );
+        return Number.isInteger(parsed) && parsed >= 1 && parsed <= 10 ? parsed : 1;
+      })(),
     }),
     cache: "no-store",
   });
