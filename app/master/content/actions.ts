@@ -54,6 +54,10 @@ export async function updateContentItem(formData: FormData) {
       attributionText: formString(formData, "attributionText"),
       licenseNotes: formString(formData, "licenseNotes"),
       licenseExpiresAt: formString(formData, "licenseExpiresAt"),
+      playlistPlayCount: Number.parseInt(
+        String(formData.get("playlistPlayCount") ?? "1"),
+        10,
+      ),
     }),
     cache: "no-store",
   });

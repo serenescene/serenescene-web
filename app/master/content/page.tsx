@@ -10,6 +10,7 @@ type AdminContentItem = {
   title: string;
   durationSec: number;
   fileUrl: string;
+  playlistPlayCount: number;
   sizeBytes: string;
   active: boolean;
   visibility: string;
@@ -308,6 +309,24 @@ export default async function MasterContentPage({
                         defaultValue={dateInputValue(item.licenseExpiresAt)}
                         className="mt-1 w-full rounded-xl border border-[#1B3A5B]/15 px-3 py-2 normal-case text-[#1B3A5B]"
                       />
+                    </label>
+
+                    <label className="text-xs font-extrabold uppercase text-[#1B3A5B]/60">
+                      Playlist plays
+                      <select
+                        name="playlistPlayCount"
+                        defaultValue={String(item.playlistPlayCount ?? 1)}
+                        className="mt-1 w-full rounded-xl border border-[#1B3A5B]/15 px-3 py-2 normal-case text-[#1B3A5B]"
+                      >
+                        {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                          <option key={n} value={n}>
+                            {n === 1 ? "1 (default)" : `${n}× per loop`}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="mt-1 block text-[11px] font-medium normal-case text-[#1B3A5B]/55">
+                        How many times this video plays in each playlist cycle (e.g. ads).
+                      </span>
                     </label>
                   </div>
 
