@@ -78,3 +78,34 @@ export async function updateDevice(formData: FormData) {
   revalidatePath("/master/devices");
   redirect("/master/devices?saved=1");
 }
+
+export async function duplicatePlaylistSlot(formData: FormData) {
+  if (!(await isMasterDashboardAuthenticated())) {
+    redirect("/master/login");
+  }
+
+  const practiceId = formString(formData, "practiceId");
+  const slotId = formString(formData, "slotId");
+  if (!practiceId || !slotId) {
+    redirect("/master/devices?error=playlist");
+  }
+
+  const baseUrl = requiredEnv("SERENE_SCENE_API_BASE_URL").replace(/\/$/, "");
+  const adminKey = requiredEnv("SERENE_SCENE_ADMIN_API_KEY");
+
+  const res = await fetch(
+    `${baseUrl}/admin/playlist/practices/${practiceId}/slots/${slotId}/duplicate`,
+    {
+      method: "POST",
+      headers: { "x-admin-api-key": adminKey },
+      cache: "no-store",
+    },
+  );
+
+  if (!res.ok) {
+    redirect("/master/devices?error=playlist");
+  }
+
+  revalidatePath("/master/devices");
+  redirect("/master/devices?saved=playlist");
+}

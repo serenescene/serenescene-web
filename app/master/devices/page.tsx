@@ -1,4 +1,8 @@
 import { redirect } from "next/navigation";
+import {
+  DevicePracticePlaylist,
+  type PracticePlaylistSlot,
+} from "@/components/device-practice-playlist";
 import { MasterNav } from "@/components/master-nav";
 import { isMasterDashboardAuthenticated } from "@/lib/master-auth";
 import { createDevice, updateDevice } from "./actions";
@@ -48,6 +52,40 @@ async function loadDevices(): Promise<{ devices: Device[]; error: string | null 
   }
 }
 
+async function loadPracticePlaylists(
+  practiceIds: string[],
+): Promise<Record<string, PracticePlaylistSlot[]>> {
+  const baseUrl = process.env.SERENE_SCENE_API_BASE_URL;
+  const adminKey = process.env.SERENE_SCENE_ADMIN_API_KEY;
+  if (!baseUrl || !adminKey || practiceIds.length === 0) {
+    return {};
+  }
+
+  const uniqueIds = [...new Set(practiceIds)];
+  const entries = await Promise.all(
+    uniqueIds.map(async (practiceId) => {
+      try {
+        const res = await fetch(
+          `${baseUrl.replace(/\/$/, "")}/admin/playlist/practices/${practiceId}`,
+          {
+            headers: { "x-admin-api-key": adminKey },
+            cache: "no-store",
+          },
+        );
+        if (!res.ok) {
+          return [practiceId, [] as PracticePlaylistSlot[]] as const;
+        }
+        const data = (await res.json()) as { slots: PracticePlaylistSlot[] };
+        return [practiceId, data.slots ?? []] as const;
+      } catch {
+        return [practiceId, [] as PracticePlaylistSlot[]] as const;
+      }
+    }),
+  );
+
+  return Object.fromEntries(entries);
+}
+
 async function loadPractices(): Promise<Practice[]> {
   const baseUrl = process.env.SERENE_SCENE_API_BASE_URL;
   const adminKey = process.env.SERENE_SCENE_ADMIN_API_KEY;
@@ -87,9 +125,10 @@ export default async function MasterDevicesPage({ searchParams }: PageProps) {
   }
 
   const params = await searchParams;
-  const [{ devices, error }, practices] = await Promise.all([
-    loadDevices(),
+  const { devices, error } = await loadDevices();
+  const [practices, playlistsByPractice] = await Promise.all([
     loadPractices(),
+    loadPracticePlaylists(devices.map((d) => d.practiceId)),
   ]);
 
   return (
@@ -124,7 +163,17 @@ export default async function MasterDevicesPage({ searchParams }: PageProps) {
             Device saved.
           </div>
         ) : null}
-        {params.error ? (
+        {params.saved === "playlist" ? (
+          <div className="mb-6 rounded-2xl border border-emerald-400/40 bg-emerald-400/15 p-4 text-sm font-bold">
+            Playlist updated. Tablets will see the change after Settings → Refresh playlist.
+          </div>
+        ) : null}
+        {params.error === "playlist" ? (
+          <div className="mb-6 rounded-2xl border border-[#E85A9B]/40 bg-[#E85A9B]/15 p-4 text-sm font-bold">
+            Could not update the practice playlist. Try again.
+          </div>
+        ) : null}
+        {params.error && params.error !== "playlist" ? (
           <div className="mb-6 rounded-2xl border border-[#E85A9B]/40 bg-[#E85A9B]/15 p-4 text-sm font-bold">
             Could not save device. Check the form and try again.
           </div>
@@ -189,32 +238,37 @@ export default async function MasterDevicesPage({ searchParams }: PageProps) {
             <div className="px-5 py-12 text-center text-[#1B3A5B]/60">No devices yet.</div>
           ) : (
             devices.map((device) => (
-              <form
+              <div
                 key={device.id}
-                action={updateDevice}
                 className="border-b border-[#1B3A5B]/10 px-5 py-5 last:border-b-0"
               >
-                <input type="hidden" name="id" value={device.id} />
                 <div className="mb-3 font-extrabold">{device.serial}</div>
                 <div className="mb-3 text-xs text-[#1B3A5B]/55">
                   {device.practiceName ?? "Unknown practice"} · last seen{" "}
                   {formatDateTime(device.lastSeenAt)}
                 </div>
-                <label className="block max-w-md text-sm font-bold">
-                  Label
-                  <input
-                    name="label"
-                    defaultValue={device.label ?? ""}
-                    className="mt-1 w-full rounded-xl border border-[#1B3A5B]/20 px-3 py-2"
-                  />
-                </label>
-                <button
-                  type="submit"
-                  className="mt-4 rounded-full bg-[#1B3A5B] px-5 py-2 text-sm font-extrabold text-white"
-                >
-                  Save device
-                </button>
-              </form>
+                <form action={updateDevice} className="max-w-md">
+                  <input type="hidden" name="id" value={device.id} />
+                  <label className="block text-sm font-bold">
+                    Label
+                    <input
+                      name="label"
+                      defaultValue={device.label ?? ""}
+                      className="mt-1 w-full rounded-xl border border-[#1B3A5B]/20 px-3 py-2"
+                    />
+                  </label>
+                  <button
+                    type="submit"
+                    className="mt-4 rounded-full bg-[#1B3A5B] px-5 py-2 text-sm font-extrabold text-white"
+                  >
+                    Save device
+                  </button>
+                </form>
+                <DevicePracticePlaylist
+                  practiceId={device.practiceId}
+                  slots={playlistsByPractice[device.practiceId] ?? []}
+                />
+              </div>
             ))
           )}
         </div>
