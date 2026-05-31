@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { fetchPracticeMe, type PracticeSession } from "@/lib/practice-api";
 
 const COOKIE_NAME = "serene_scene_practice_token";
@@ -41,6 +42,25 @@ export async function requirePracticeSession(): Promise<{
   const practice = await fetchPracticeMe(token);
   if (!practice) {
     throw new Error("UNAUTHORIZED");
+  }
+  return { token, practice };
+}
+
+/** Redirects to login/onboarding when needed; use on authenticated practice pages. */
+export async function requirePracticePage(): Promise<{
+  token: string;
+  practice: PracticeSession;
+}> {
+  const token = await getPracticeToken();
+  if (!token) {
+    redirect("/practice/login");
+  }
+  const practice = await fetchPracticeMe(token);
+  if (!practice) {
+    redirect("/practice/login");
+  }
+  if (practice.needsOnboarding) {
+    redirect("/practice/onboarding");
   }
   return { token, practice };
 }

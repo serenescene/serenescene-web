@@ -6,7 +6,8 @@ import { PracticeShell } from "@/components/practice-shell";
 import { DEFAULT_FEATURE_FLAGS, type FeatureFlags } from "@/lib/feature-flags";
 import { suggestedExperienceTitle } from "@/lib/experience-title";
 import { getPracticeSession } from "@/lib/practice-auth";
-import { logoutPractice, updatePracticeProfile } from "./actions";
+import { PracticeLogoutFooter } from "@/components/practice-logout-footer";
+import { updatePracticeProfile } from "./actions";
 import { updatePracticeFeatureFlags } from "./feature-actions";
 
 type PageProps = {
@@ -39,16 +40,10 @@ export default async function PracticeDashboardPage({ searchParams }: PageProps)
   return (
     <PracticeShell
       title={`Welcome, ${session.name}`}
-      subtitle="Your Serene Scene practice hub. Update your experience name and optional Google review link anytime."
+      subtitle="Profile, Google review link, and tablet experience name."
       navVariant="authenticated"
       navActive="dashboard"
-      footer={
-        <form action={logoutPractice}>
-          <button type="submit" className="font-bold text-[#5BC0DE] underline">
-            Sign out
-          </button>
-        </form>
-      }
+      footer={<PracticeLogoutFooter />}
     >
       {params.welcome === "1" ? (
         <div className="mb-4 rounded-2xl border border-emerald-400/40 bg-emerald-400/15 px-4 py-3 text-sm font-bold">

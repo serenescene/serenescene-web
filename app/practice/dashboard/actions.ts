@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { patchPracticeMe } from "@/lib/practice-api";
-import { clearPracticeAuthCookie, requirePracticeSession } from "@/lib/practice-auth";
+import { requirePracticeSession } from "@/lib/practice-auth";
 
 export async function updatePracticeProfile(formData: FormData) {
   let token: string;
@@ -30,9 +30,4 @@ export async function updatePracticeProfile(formData: FormData) {
 
   revalidatePath("/practice/dashboard");
   redirect("/practice/dashboard?saved=1");
-}
-
-export async function logoutPractice() {
-  await clearPracticeAuthCookie();
-  redirect("/practice/login");
 }

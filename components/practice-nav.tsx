@@ -1,20 +1,39 @@
 import Link from "next/link";
 
-export type PracticeNavActive = "dashboard" | "onboarding" | "login" | "signup";
+export type PracticeNavActive =
+  | "dashboard"
+  | "devices"
+  | "feedback"
+  | "playlist"
+  | "help"
+  | "billing"
+  | "onboarding"
+  | "login"
+  | "signup";
 
 type PracticeNavProps = {
   variant: "authenticated" | "public";
   active?: PracticeNavActive;
 };
 
-const authenticatedLinks: { href: string; label: string; key: PracticeNavActive | "home" | "safety" | "contact" }[] = [
-  { href: "/practice/dashboard", label: "Practice hub", key: "dashboard" },
-  { href: "/", label: "Home", key: "home" },
-  { href: "/safety", label: "Safety", key: "safety" },
-  { href: "/#contact", label: "Contact", key: "contact" },
+const authenticatedLinks: {
+  href: string;
+  label: string;
+  key: PracticeNavActive | "home" | "safety" | "contact";
+}[] = [
+  { href: "/practice/dashboard", label: "Hub", key: "dashboard" },
+  { href: "/practice/devices", label: "Devices", key: "devices" },
+  { href: "/practice/feedback", label: "Feedback", key: "feedback" },
+  { href: "/practice/playlist", label: "Playlist", key: "playlist" },
+  { href: "/practice/help", label: "Help", key: "help" },
+  { href: "/practice/billing", label: "Billing", key: "billing" },
 ];
 
-const publicLinks: { href: string; label: string; key: PracticeNavActive | "home" | "safety" }[] = [
+const publicLinks: {
+  href: string;
+  label: string;
+  key: PracticeNavActive | "home" | "safety";
+}[] = [
   { href: "/", label: "Home", key: "home" },
   { href: "/practice/login", label: "Sign in", key: "login" },
   { href: "/practice/signup", label: "Sign up", key: "signup" },
@@ -30,10 +49,7 @@ export function PracticeNav({ variant, active }: PracticeNavProps) {
   const links = variant === "authenticated" ? authenticatedLinks : publicLinks;
 
   return (
-    <nav
-      className="mt-5 flex flex-wrap gap-2"
-      aria-label="Practice site navigation"
-    >
+    <nav className="mt-5 flex flex-wrap gap-2" aria-label="Practice site navigation">
       {links.map((link) => {
         const activeLink = isActive(link.key, active);
         return (
@@ -69,10 +85,7 @@ export function PracticeFooterLinks() {
         Contact
       </Link>
       {" · "}
-      <a
-        href="mailto:hello@serenescene.app"
-        className="font-bold text-[#5BC0DE] underline"
-      >
+      <a href="mailto:hello@serenescene.app" className="font-bold text-[#5BC0DE] underline">
         Support
       </a>
     </p>
