@@ -26,6 +26,8 @@ export default async function PracticeLoginPage({ searchParams }: PageProps) {
     <PracticeShell
       title="Practice sign in"
       subtitle="Manage your Serene Scene setup, review link, and patient experience name."
+      navVariant="public"
+      navActive="login"
       footer={
         <p className="text-[#F8FAFB]/70">
           New here?{" "}

@@ -34,6 +34,8 @@ export default async function PracticeOnboardingPage({ searchParams }: PageProps
     <PracticeShell
       title="Quick setup"
       subtitle="Name your chairside experience. A Google review link is optional but highly recommended."
+      navVariant="authenticated"
+      navActive="onboarding"
     >
       {message ? (
         <div className="mb-4 rounded-2xl bg-[#E85A9B]/15 px-4 py-3 text-sm font-bold">{message}</div>

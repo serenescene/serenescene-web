@@ -40,6 +40,8 @@ export default async function PracticeDashboardPage({ searchParams }: PageProps)
     <PracticeShell
       title={`Welcome, ${session.name}`}
       subtitle="Your Serene Scene practice hub. Update your experience name and optional Google review link anytime."
+      navVariant="authenticated"
+      navActive="dashboard"
       footer={
         <form action={logoutPractice}>
           <button type="submit" className="font-bold text-[#5BC0DE] underline">

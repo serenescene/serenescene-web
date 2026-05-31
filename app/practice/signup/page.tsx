@@ -28,6 +28,8 @@ export default async function PracticeSignupPage({ searchParams }: PageProps) {
     <PracticeShell
       title="Get started"
       subtitle="Create your practice account in under a minute. Next you'll name your chairside experience — adding a Google review link is optional but highly recommended."
+      navVariant="public"
+      navActive="signup"
       footer={
         <p className="text-[#F8FAFB]/70">
           Already have an account?{" "}
