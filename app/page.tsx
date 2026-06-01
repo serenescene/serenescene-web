@@ -154,6 +154,10 @@ export default async function Home({ searchParams }: HomeProps) {
           <a href="/safety" className="font-semibold text-[#2B8CB8] underline">
             Safety &amp; use information
           </a>
+          {" · "}
+          <a href="/privacy" className="font-semibold text-[#2B8CB8] underline">
+            Privacy policy
+          </a>
         </p>
         <p className="mt-2">
           © {new Date().getFullYear()} Envision Yourself Empowered, LLC · Serene Scene
