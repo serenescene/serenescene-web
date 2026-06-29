@@ -1,8 +1,17 @@
+import Link from "next/link";
 import { DemoRequestForm } from "@/components/DemoRequestForm";
-import { Nav } from "@/components/Nav";
-
-const DEMO_MAILTO =
-  "mailto:hello@serenescene.app?subject=Serene%20Scene%20Demo%20Request";
+import { MarketingFooter } from "@/components/marketing/MarketingFooter";
+import { MarketingNav } from "@/components/marketing/MarketingNav";
+import {
+  benefits,
+  faq,
+  formatUsd,
+  hero,
+  howItWorks,
+  PRICING,
+  pricingPlans,
+  trustPoints,
+} from "@/lib/marketing-content";
 
 type HomeProps = {
   searchParams: Promise<{ demoSent?: string; demoError?: string }>;
@@ -15,154 +24,181 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <main className="min-h-screen bg-[#F8FAFB] text-[#1B3A5B]">
-      <Nav />
+      <MarketingNav />
 
       {/* Hero */}
-      <section className="max-w-5xl mx-auto px-8 py-24 text-center">
-        <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
-          Calm patients.<br />
-          <span className="text-[#5BC0DE]">Better reviews.</span><br />
-          <span className="text-[#E85A9B]">Serene Scene.</span>
-        </h1>
-        <p className="text-xl md:text-2xl text-[#1B3A5B]/70 max-w-2xl mx-auto mb-10">
-          Serene Scene transforms the dental chair into an immersive escape — improving patient comfort and your practice&apos;s satisfaction ratings.
-        </p>
-        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <a
-            href="/practice/signup"
-            className="inline-block bg-[#2B8CB8] text-white px-8 py-4 rounded-full text-lg font-semibold hover:opacity-90"
-          >
-            Get started free
-          </a>
-          <a
-            href="#contact"
-            className="inline-block bg-[#E85A9B] text-white px-8 py-4 rounded-full text-lg font-semibold hover:opacity-90"
-          >
-            Request a Demo
-          </a>
+      <section className="relative overflow-hidden bg-[#07111C] px-6 py-24 text-[#F8FAFB]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#2B8CB8_0%,_transparent_55%)] opacity-30" />
+        <div className="relative mx-auto max-w-4xl text-center">
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#5BC0DE]">
+            {hero.eyebrow}
+          </p>
+          <h1 className="mt-4 text-4xl font-extrabold leading-tight md:text-6xl">
+            {hero.headline}
+            <br />
+            <span className="text-[#5BC0DE]">{hero.headlineAccent}</span>
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-[#F8FAFB]/75 md:text-xl">
+            {hero.subhead}
+          </p>
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Link
+              href={hero.primaryCta.href}
+              className="rounded-full bg-[#E85A9B] px-8 py-4 text-lg font-extrabold text-white hover:opacity-90"
+            >
+              {hero.primaryCta.label}
+            </Link>
+            <a
+              href={hero.secondaryCta.href}
+              className="rounded-full border border-white/30 px-8 py-4 text-lg font-extrabold hover:bg-white/10"
+            >
+              {hero.secondaryCta.label}
+            </a>
+          </div>
+          <ul className="mx-auto mt-12 flex max-w-3xl flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-bold text-[#F8FAFB]/55">
+            {trustPoints.map((point) => (
+              <li key={point}>• {point}</li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="max-w-6xl mx-auto px-8 py-20">
-        <h2 className="text-4xl font-bold text-center mb-16">How it works</h2>
-        <div className="grid md:grid-cols-3 gap-12">
-          {[
-            { n: "1", t: "Patient settles in", d: "Your assistant places lightweight XR glasses on the patient before the procedure begins." },
-            { n: "2", t: "They escape", d: "Calming nature scenes and ambient music fill their view, distracting from the sights and sounds of the procedure." },
-            { n: "3", t: "You earn the review", d: "After the visit, patients rate their experience and are invited to leave a Google review — at peak relaxation." },
-          ].map((s) => (
-            <div key={s.n} className="text-center">
-              <div className="w-16 h-16 mx-auto rounded-full bg-[#F4D35E] text-[#1B3A5B] text-2xl font-bold flex items-center justify-center mb-4">
-                {s.n}
-              </div>
-              <h3 className="text-2xl font-bold mb-3">{s.t}</h3>
-              <p className="text-[#1B3A5B]/70">{s.d}</p>
+      {/* Benefits */}
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <h2 className="text-center text-3xl font-extrabold md:text-4xl">
+          Why practices choose Serene Scene
+        </h2>
+        <div className="mt-12 grid gap-8 md:grid-cols-2">
+          {benefits.map((b) => (
+            <div
+              key={b.title}
+              className="rounded-3xl border border-[#1B3A5B]/10 bg-white p-6 shadow-sm"
+            >
+              <h3 className="text-xl font-extrabold text-[#2B8CB8]">{b.title}</h3>
+              <p className="mt-2 text-[#1B3A5B]/75">{b.body}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className="bg-white py-20">
-        <div className="max-w-2xl mx-auto px-8">
-          <h2 className="text-4xl font-bold text-center mb-4">Simple pricing</h2>
-          <p className="text-center text-[#1B3A5B]/60 mb-12">One plan. Everything included.</p>
-          <div className="p-10 rounded-2xl border-2 border-[#5BC0DE] bg-[#F8FAFB]">
-            <div className="text-[#5BC0DE] font-semibold mb-2 text-center">Per Operatory</div>
-            <div className="text-center mb-2">
-              <span className="text-5xl font-bold">$249</span>
-              <span className="text-xl font-normal">/month</span>
-            </div>
-            <div className="text-sm text-[#1B3A5B]/60 mb-1 text-center">+ $1,000 one-time setup</div>
-            <div className="text-sm text-[#1B3A5B]/60 mb-8 text-center">24-month term</div>
-            <ul className="space-y-3 text-[#1B3A5B]/80 max-w-md mx-auto">
-              <li>✓ XR glasses + Android player included</li>
-              <li>✓ Full content library, updated monthly</li>
-              <li>✓ Patient satisfaction analytics dashboard</li>
-              <li>✓ Automated Google review invitations</li>
-              <li>✓ Staff training & onboarding</li>
-              <li>✓ Hardware swap on failure</li>
-            </ul>
-            <div className="text-center mt-8">
-              <a
-                href={DEMO_MAILTO}
-                className="inline-block bg-[#E85A9B] text-white px-8 py-3 rounded-full font-semibold hover:opacity-90"
-              >
-                Get Started
-              </a>
-            </div>
+      {/* How it works */}
+      <section id="how-it-works" className="border-y border-[#1B3A5B]/10 bg-white py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="text-center text-3xl font-extrabold md:text-4xl">How it works</h2>
+          <div className="mt-14 grid gap-10 md:grid-cols-3">
+            {howItWorks.map((s) => (
+              <div key={s.step} className="text-center">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#F4D35E] text-xl font-extrabold">
+                  {s.step}
+                </div>
+                <h3 className="text-xl font-extrabold">{s.title}</h3>
+                <p className="mt-2 text-sm font-semibold text-[#1B3A5B]/70">{s.body}</p>
+              </div>
+            ))}
           </div>
-          <p className="text-center text-sm text-[#1B3A5B]/50 mt-6">
-            Multiple operatories? <a href="#contact" className="underline">Ask about volume pricing.</a>
-          </p>
         </div>
       </section>
 
-      {/* Contact */}
-      <section id="contact" className="max-w-3xl mx-auto px-8 py-24 text-center">
-        <h2 className="text-4xl font-bold mb-6">Ready to give your patients a serene scene?</h2>
-        <p className="text-xl text-[#1B3A5B]/70 mb-8">
-          Email us and we&apos;ll set up a 15-minute demo.
+      {/* Pricing teaser */}
+      <section className="mx-auto max-w-4xl px-6 py-20 text-center">
+        <h2 className="text-3xl font-extrabold md:text-4xl">Simple, per-operatory pricing</h2>
+        <p className="mt-3 text-[#1B3A5B]/65">
+          Setup and monthly service are billed separately — no hidden bundles.
         </p>
-        <a
-          href="mailto:hello@serenescene.app"
-          className="inline-block bg-[#E85A9B] text-white px-8 py-4 rounded-full text-lg font-semibold hover:opacity-90"
+        <div className="mt-10 grid gap-6 md:grid-cols-2">
+          <div className="rounded-3xl border-2 border-[#5BC0DE] bg-white p-8">
+            <p className="text-sm font-extrabold uppercase text-[#2B8CB8]">
+              {pricingPlans.setup.title}
+            </p>
+            <p className="mt-2 text-4xl font-extrabold">
+              {formatUsd(PRICING.setupPerOperatory)}
+              <span className="text-base font-semibold text-[#1B3A5B]/60"> / chair</span>
+            </p>
+          </div>
+          <div className="rounded-3xl border-2 border-[#E85A9B] bg-white p-8">
+            <p className="text-sm font-extrabold uppercase text-[#E85A9B]">
+              {pricingPlans.subscription.title}
+            </p>
+            <p className="mt-2 text-4xl font-extrabold">
+              {formatUsd(PRICING.monthlyPerOperatory)}
+              <span className="text-base font-semibold text-[#1B3A5B]/60"> / chair / mo</span>
+            </p>
+          </div>
+        </div>
+        <Link
+          href="/practice/signup?next=/subscribe"
+          className="mt-8 inline-block rounded-full bg-[#2B8CB8] px-8 py-4 font-extrabold text-white hover:opacity-90"
         >
-          hello@serenescene.app
-        </a>
+          Get started
+        </Link>
+        <p className="mt-4 text-sm">
+          <Link href="/pricing" className="font-bold text-[#2B8CB8] underline">
+            See full pricing & FAQ
+          </Link>
+        </p>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="border-t border-[#1B3A5B]/10 bg-white py-20">
+        <div className="mx-auto max-w-3xl px-6">
+          <h2 className="text-center text-3xl font-extrabold">Frequently asked</h2>
+          <dl className="mt-10 space-y-5">
+            {faq.slice(0, 4).map((item) => (
+              <div key={item.q} className="rounded-2xl bg-[#F8FAFB] p-5">
+                <dt className="font-extrabold">{item.q}</dt>
+                <dd className="mt-2 text-sm font-semibold text-[#1B3A5B]/75">{item.a}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-8 text-center text-sm">
+            <Link href="/pricing#faq" className="font-bold text-[#2B8CB8] underline">
+              More questions on the pricing page
+            </Link>
+          </p>
+        </div>
       </section>
 
       {/* Demo request */}
       <section
         id="demo-request"
-        className="border-t border-[#1B3A5B]/10 bg-white py-20"
+        className="border-t border-[#1B3A5B]/10 py-20"
         aria-labelledby="demo-request-heading"
       >
-        <div className="mx-auto max-w-3xl px-8 text-center">
-          <h2
-            id="demo-request-heading"
-            className="mb-3 text-3xl font-bold md:text-4xl"
-          >
+        <div className="mx-auto max-w-3xl px-6 text-center">
+          <h2 id="demo-request-heading" className="text-3xl font-extrabold md:text-4xl">
             Request a demo
           </h2>
-          <p className="mb-10 text-lg text-[#1B3A5B]/70">
-            Tell us about your practice and we&apos;ll follow up shortly.
+          <p className="mt-3 text-lg text-[#1B3A5B]/70">
+            Tell us about your practice and we&apos;ll follow up within one business day.
           </p>
           {demoSent ? (
-            <p className="rounded-lg bg-[#5BC0DE]/15 px-4 py-3 text-[#1B3A5B]">
+            <p className="mt-8 rounded-2xl bg-[#5BC0DE]/15 px-4 py-3 font-bold">
               Thanks — your demo request was received.
             </p>
           ) : null}
           {demoError === "missing" ? (
-            <p className="mb-6 rounded-lg bg-[#E85A9B]/15 px-4 py-3 text-[#1B3A5B]">
+            <p className="mb-6 mt-8 rounded-2xl bg-[#E85A9B]/15 px-4 py-3 font-bold">
               Please fill in practice name, contact name, and email.
             </p>
           ) : null}
           {demoError === "send" ? (
-            <p className="mb-6 rounded-lg bg-[#E85A9B]/15 px-4 py-3 text-[#1B3A5B]">
-              Something went wrong sending your request. Please try again or email us directly.
+            <p className="mb-6 mt-8 rounded-2xl bg-[#E85A9B]/15 px-4 py-3 font-bold">
+              Something went wrong. Email{" "}
+              <a href="mailto:hello@serenescene.app" className="underline">
+                hello@serenescene.app
+              </a>{" "}
+              directly.
             </p>
           ) : null}
-          {!demoSent ? <DemoRequestForm /> : null}
+          {!demoSent ? (
+            <div className="mt-8 text-left">
+              <DemoRequestForm />
+            </div>
+          ) : null}
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-[#1B3A5B]/10 py-8 text-center text-sm text-[#1B3A5B]/50">
-        <p>
-          <a href="/safety" className="font-semibold text-[#2B8CB8] underline">
-            Safety &amp; use information
-          </a>
-          {" · "}
-          <a href="/privacy" className="font-semibold text-[#2B8CB8] underline">
-            Privacy policy
-          </a>
-        </p>
-        <p className="mt-2">
-          © {new Date().getFullYear()} Envision Yourself Empowered, LLC · Serene Scene
-        </p>
-      </footer>
+      <MarketingFooter />
     </main>
   );
 }

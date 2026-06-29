@@ -2,19 +2,25 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PracticeShell } from "@/components/practice-shell";
 import { getPracticeSession } from "@/lib/practice-auth";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 import { signupPracticeAccount } from "./actions";
 
 type PageProps = {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; next?: string }>;
 };
 
 export default async function PracticeSignupPage({ searchParams }: PageProps) {
+  const { error, next: nextRaw } = await searchParams;
+  const next = safeRedirectPath(nextRaw, "/practice/onboarding");
+
   const session = await getPracticeSession();
   if (session) {
-    redirect(session.needsOnboarding ? "/practice/onboarding" : "/practice/dashboard");
+    if (session.needsOnboarding) {
+      redirect("/practice/onboarding");
+    }
+    redirect(next === "/practice/onboarding" ? "/practice/dashboard" : next);
   }
 
-  const { error } = await searchParams;
   const message =
     error === "exists"
       ? "That email is already registered. Sign in instead."
@@ -46,6 +52,7 @@ export default async function PracticeSignupPage({ searchParams }: PageProps) {
       ) : null}
 
       <form action={signupPracticeAccount} className="space-y-4">
+        <input type="hidden" name="next" value={next} />
         <label className="block text-sm font-extrabold">
           Practice or doctor name
           <input

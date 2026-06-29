@@ -14,7 +14,7 @@ export async function setPracticeAuthCookie(token: string) {
   cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
     maxAge: 60 * 60 * 24 * 7,
-    path: "/practice",
+    path: "/",
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
   });
@@ -22,7 +22,7 @@ export async function setPracticeAuthCookie(token: string) {
 
 export async function clearPracticeAuthCookie() {
   const cookieStore = await cookies();
-  cookieStore.delete(COOKIE_NAME);
+  cookieStore.delete({ name: COOKIE_NAME, path: "/" });
 }
 
 export async function getPracticeSession(): Promise<PracticeSession | null> {

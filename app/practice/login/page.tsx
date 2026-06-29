@@ -2,19 +2,25 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PracticeShell } from "@/components/practice-shell";
 import { getPracticeSession } from "@/lib/practice-auth";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 import { loginPracticeAccount } from "./actions";
 
 type PageProps = {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; next?: string }>;
 };
 
 export default async function PracticeLoginPage({ searchParams }: PageProps) {
+  const { error, next: nextRaw } = await searchParams;
+  const next = safeRedirectPath(nextRaw, "/practice/dashboard");
+
   const session = await getPracticeSession();
   if (session) {
-    redirect(session.needsOnboarding ? "/practice/onboarding" : "/practice/dashboard");
+    if (session.needsOnboarding) {
+      redirect("/practice/onboarding");
+    }
+    redirect(next);
   }
 
-  const { error } = await searchParams;
   const message =
     error === "invalid"
       ? "Email or password did not match."
@@ -42,6 +48,7 @@ export default async function PracticeLoginPage({ searchParams }: PageProps) {
       ) : null}
 
       <form action={loginPracticeAccount} className="space-y-4">
+        <input type="hidden" name="next" value={next} />
         <label className="block text-sm font-extrabold">
           Work email
           <input
