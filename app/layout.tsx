@@ -14,16 +14,16 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://serenescene.app"),
-  title: "Serene Scene — Calm patients. Better reviews.",
+  title: "Serene Scene — Calm Patient. Better Reviews.",
   description: "XR-based patient comfort for dental practices.",
   openGraph: {
-    title: "Serene Scene — Calm patients. Better reviews.",
+    title: "Serene Scene — Calm Patient. Better Reviews.",
     description: "XR-based patient comfort for dental practices.",
     type: "website",
   },
   twitter: {
     card: "summary",
-    title: "Serene Scene — Calm patients. Better reviews.",
+    title: "Serene Scene — Calm Patient. Better Reviews.",
     description: "XR-based patient comfort for dental practices.",
   },
   icons: {

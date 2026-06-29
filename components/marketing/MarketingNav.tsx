@@ -44,7 +44,7 @@ export function MarketingNav() {
             Pricing
           </Link>
           <Link
-            href="/subscribe"
+            href="/practice/subscribe"
             className="rounded-full bg-[#2B8CB8] px-4 py-2 text-sm font-bold text-white hover:opacity-90"
           >
             Subscribe

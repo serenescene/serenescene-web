@@ -9,17 +9,17 @@ export async function startCheckout(formData: FormData) {
   try {
     ({ token } = await requirePracticeSession());
   } catch {
-    redirect("/practice/login?next=/subscribe");
+    redirect("/practice/login?next=/practice/subscribe");
   }
 
   const operatories = Number.parseInt(String(formData.get("operatories") ?? "1"), 10);
   if (!Number.isInteger(operatories) || operatories < 1 || operatories > 20) {
-    redirect("/subscribe?error=operatories");
+    redirect("/practice/subscribe?error=operatories");
   }
 
   const result = await createBillingCheckout(token, operatories);
   if ("error" in result) {
-    redirect(`/subscribe?error=${encodeURIComponent(result.error)}`);
+    redirect(`/practice/subscribe?error=${encodeURIComponent(result.error)}`);
   }
   redirect(result.url);
 }

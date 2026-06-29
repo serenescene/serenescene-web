@@ -33,10 +33,12 @@ export default async function Home({ searchParams }: HomeProps) {
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#5BC0DE]">
             {hero.eyebrow}
           </p>
-          <h1 className="mt-4 text-4xl font-extrabold leading-tight md:text-6xl">
+          <h1 className="mt-4 text-4xl font-extrabold leading-tight md:text-7xl">
             {hero.headline}
             <br />
             <span className="text-[#5BC0DE]">{hero.headlineAccent}</span>
+            <br />
+            <span className="text-[#E85A9B]">{hero.headlineBrand}</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-[#F8FAFB]/75 md:text-xl">
             {hero.subhead}
@@ -126,7 +128,7 @@ export default async function Home({ searchParams }: HomeProps) {
           </div>
         </div>
         <Link
-          href="/practice/signup?next=/subscribe"
+          href="/practice/signup?next=/practice/subscribe"
           className="mt-8 inline-block rounded-full bg-[#2B8CB8] px-8 py-4 font-extrabold text-white hover:opacity-90"
         >
           Get started

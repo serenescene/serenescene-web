@@ -25,8 +25,7 @@ export default function PricingPage() {
           Setup and subscription, kept separate
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-[#1B3A5B]/70">
-          Pay operatory setup before we order hardware. Your monthly service funds content,
-          production, and optional in-practice placements.
+          Setup and monthly service are billed separately — no hidden bundles.
         </p>
       </section>
 
@@ -67,7 +66,7 @@ export default function PricingPage() {
             {PRICING.termMonths}-month service term · Billed monthly after setup
           </p>
           <Link
-            href="/practice/signup?next=/subscribe"
+            href="/practice/signup?next=/practice/subscribe"
             className="mt-6 inline-block rounded-full bg-[#E85A9B] px-8 py-3 font-extrabold text-white hover:opacity-90"
           >
             Create account & subscribe
@@ -119,7 +118,7 @@ export default function PricingPage() {
         </dl>
         <p className="mt-10 text-center">
           <Link
-            href="/subscribe"
+            href="/practice/subscribe"
             className="rounded-full bg-[#2B8CB8] px-8 py-3 font-extrabold text-white hover:opacity-90"
           >
             Go to checkout

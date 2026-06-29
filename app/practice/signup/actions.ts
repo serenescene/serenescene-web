@@ -26,5 +26,5 @@ export async function signupPracticeAccount(formData: FormData) {
 
   await setPracticeAuthCookie(result.token);
   revalidatePath("/practice");
-  redirect(next === "/subscribe" ? "/practice/onboarding" : next);
+  redirect(next === "/practice/subscribe" || next === "/subscribe" ? "/practice/onboarding" : next);
 }

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { estimateTotals, formatUsd, PRICING } from "@/lib/marketing-content";
-import { startCheckout } from "@/app/subscribe/actions";
+import { startCheckout } from "@/app/practice/subscribe/actions";
 
 type SubscribeCheckoutFormProps = {
   checkoutEnabled: boolean;

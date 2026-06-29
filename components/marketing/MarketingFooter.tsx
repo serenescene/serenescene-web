@@ -9,7 +9,7 @@ export function MarketingFooter() {
             Pricing
           </Link>
           {" · "}
-          <Link href="/subscribe" className="hover:text-[#2B8CB8]">
+          <Link href="/practice/subscribe" className="hover:text-[#2B8CB8]">
             Subscribe
           </Link>
           {" · "}

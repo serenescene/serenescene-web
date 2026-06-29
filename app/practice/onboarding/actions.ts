@@ -35,5 +35,5 @@ export async function completePracticeOnboarding(formData: FormData) {
   }
 
   revalidatePath("/practice");
-  redirect("/subscribe?welcome=1");
+  redirect("/practice/subscribe?welcome=1");
 }

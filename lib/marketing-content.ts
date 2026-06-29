@@ -14,8 +14,9 @@ export const marketingNav = [
 
 export const hero = {
   eyebrow: "Chairside comfort for modern dental practices",
-  headline: "Calm patients in the chair.",
-  headlineAccent: "Stronger reviews after the visit.",
+  headline: "Calm Patient.",
+  headlineAccent: "Better Reviews.",
+  headlineBrand: "Serene Scene.",
   subhead:
     "Serene Scene is a turnkey XR comfort system for dental operatories — calming video on lightweight glasses, simple staff controls, and optional Google review prompts when patients are at ease.",
   primaryCta: { label: "View pricing & subscribe", href: "/pricing" },
@@ -25,7 +26,7 @@ export const hero = {
 export const trustPoints = [
   "Not a medical device — wellness & distraction positioning",
   "No PHI collected from patients",
-  "Hardware provisioned after setup payment",
+  "Turnkey operatory kits included",
   "Remote app & playlist updates over Wi‑Fi",
 ] as const;
 
@@ -33,7 +34,7 @@ export const howItWorks = [
   {
     step: "1",
     title: "We install your operatory kit",
-    body: "After setup payment, we ship and configure the tablet player, XR glasses, and office Wi‑Fi checklist. Your team gets a short chairside guide.",
+    body: "We deliver and configure the tablet player, XR glasses, and office Wi‑Fi checklist. Your team gets a short chairside guide.",
   },
   {
     step: "2",
@@ -72,7 +73,7 @@ export const pricingPlans = {
     price: PRICING.setupPerOperatory,
     period: "one-time per chair",
     description:
-      "Covers XR glasses, tablet player, initial configuration, and our time to install and train your team. We order hardware after this payment clears.",
+      "Covers XR glasses, tablet player, initial configuration, and our time to install and train your team.",
     includes: [
       "XR glasses + configured Android player",
       "On-site or guided remote setup",
@@ -99,15 +100,15 @@ export const pricingPlans = {
 
 export const funnelSteps = [
   { n: 1, title: "Create practice account", href: "/practice/signup" },
-  { n: 2, title: "Pay setup + start subscription", href: "/subscribe" },
-  { n: 3, title: "We schedule install", body: "Hardware ships after setup payment." },
+  { n: 2, title: "Pay setup + start subscription", href: "/practice/subscribe" },
+  { n: 3, title: "We schedule install", body: "We coordinate delivery and setup with your team." },
   { n: 4, title: "Go live chairside", href: "/practice/help" },
 ] as const;
 
 export const faq = [
   {
     q: "Why is setup separate from the monthly fee?",
-    a: "Setup covers physical hardware and our installation time — we don't purchase your kit until you've paid. The monthly subscription funds content production, licensing, custom practice placements, and ongoing support.",
+    a: "Setup covers physical hardware and our installation time. The monthly subscription funds content production, licensing, custom practice placements, and ongoing support.",
   },
   {
     q: "Is this a medical or sedation device?",
