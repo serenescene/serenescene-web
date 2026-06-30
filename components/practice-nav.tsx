@@ -7,6 +7,7 @@ export type PracticeNavActive =
   | "playlist"
   | "help"
   | "billing"
+  | "account"
   | "onboarding"
   | "login"
   | "signup";
@@ -27,6 +28,7 @@ const authenticatedLinks: {
   { href: "/practice/playlist", label: "Playlist", key: "playlist" },
   { href: "/practice/help", label: "Help", key: "help" },
   { href: "/practice/billing", label: "Billing", key: "billing" },
+  { href: "/practice/account", label: "Account", key: "account" },
 ];
 
 const publicLinks: {

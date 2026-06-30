@@ -161,6 +161,22 @@ export async function fetchPracticePlaylist(token: string) {
   return { slots: (data as { slots: PracticePlaylistSlot[] }).slots ?? [] } as const;
 }
 
+export async function changePracticePassword(
+  token: string,
+  currentPassword: string,
+  newPassword: string,
+): Promise<{ ok: true } | { error: string }> {
+  const { res, data } = await practiceAuthFetch(token, "/practices/me/change-password", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ currentPassword, newPassword }),
+  });
+  if (!res.ok) {
+    return { error: (data as { error?: string }).error ?? "Failed to change password" };
+  }
+  return { ok: true };
+}
+
 export async function createPracticeBillingPortalSession(token: string) {
   const { res, data } = await practiceAuthFetch(token, "/practices/me/billing-portal", {
     method: "POST",
