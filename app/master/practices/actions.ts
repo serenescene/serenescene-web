@@ -62,6 +62,8 @@ export async function updatePractice(formData: FormData) {
   const baseUrl = requiredEnv("SERENE_SCENE_API_BASE_URL").replace(/\/$/, "");
   const adminKey = requiredEnv("SERENE_SCENE_ADMIN_API_KEY");
 
+  const password = formString(formData, "password");
+
   const res = await fetch(`${baseUrl}/admin/practices/${id}`, {
     method: "PATCH",
     headers: {
@@ -74,6 +76,7 @@ export async function updatePractice(formData: FormData) {
       googleReviewUrl: formString(formData, "googleReviewUrl") || null,
       stripeCustomerId: formString(formData, "stripeCustomerId") || null,
       featureFlags: featureFlagsFromFormData(formData),
+      ...(password.length >= 8 ? { password } : {}),
     }),
     cache: "no-store",
   });
@@ -83,7 +86,11 @@ export async function updatePractice(formData: FormData) {
   }
 
   revalidatePath("/master/practices");
-  redirect("/master/practices?saved=1");
+  redirect(
+    password.length >= 8
+      ? "/master/practices?saved=1&password=1"
+      : "/master/practices?saved=1",
+  );
 }
 
 export async function deactivatePractice(formData: FormData) {

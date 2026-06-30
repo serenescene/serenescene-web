@@ -72,6 +72,7 @@ function formatDate(value: string) {
 type PageProps = {
   searchParams: Promise<{
     saved?: string;
+    password?: string;
     error?: string;
     deactivated?: string;
     reactivated?: string;
@@ -117,6 +118,9 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
         {params.saved === "1" ? (
           <div className="mb-6 rounded-2xl border border-emerald-400/40 bg-emerald-400/15 p-4 text-sm font-bold">
             Practice saved.
+            {params.password === "1"
+              ? " New login password is active — share it with the practice securely."
+              : null}
           </div>
         ) : null}
         {params.deactivated === "1" ? (
@@ -244,8 +248,7 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
                 <input type="hidden" name="id" value={practice.id} />
                 <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-[#1B3A5B]/55">
                   <span>
-                    {practice.email} · {practice.deviceCount} device(s) · joined{" "}
-                    {formatDate(practice.createdAt)}
+                    {practice.deviceCount} device(s) · joined {formatDate(practice.createdAt)}
                   </span>
                   {!practice.active ? (
                     <span className="rounded-full bg-rose-100 px-2 py-0.5 font-extrabold text-rose-800">
@@ -278,6 +281,28 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
                       defaultValue={practice.name}
                       className="mt-1 w-full rounded-xl border border-[#1B3A5B]/20 px-3 py-2"
                     />
+                  </label>
+                  <label className="block text-sm font-bold">
+                    Login email
+                    <input
+                      readOnly
+                      value={practice.email}
+                      className="mt-1 w-full rounded-xl border border-[#1B3A5B]/20 bg-[#F8FAFB] px-3 py-2 text-[#1B3A5B]/80"
+                    />
+                  </label>
+                  <label className="block text-sm font-bold">
+                    Set new password
+                    <input
+                      name="password"
+                      type="text"
+                      autoComplete="new-password"
+                      minLength={8}
+                      placeholder="Leave blank to keep current password"
+                      className="mt-1 w-full rounded-xl border border-[#1B3A5B]/20 px-3 py-2"
+                    />
+                    <span className="mt-1 block text-xs font-bold text-[#1B3A5B]/55">
+                      Min 8 characters. Existing passwords cannot be viewed — only reset.
+                    </span>
                   </label>
                   <label className="block text-sm font-bold">
                     Subscription
