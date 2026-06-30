@@ -1,22 +1,9 @@
 import { redirect } from "next/navigation";
-import {
-  DevicePracticePlaylist,
-  type PracticePlaylistSlot,
-} from "@/components/device-practice-playlist";
+import { DeviceList, type MasterDevice } from "@/components/master/device-list";
+import type { PracticePlaylistSlot } from "@/components/device-practice-playlist";
 import { MasterNav } from "@/components/master-nav";
 import { isMasterDashboardAuthenticated } from "@/lib/master-auth";
-import { createDevice, updateDevice } from "./actions";
-
-type Device = {
-  id: string;
-  practiceId: string;
-  serial: string;
-  label: string | null;
-  lastSeenAt: string | null;
-  createdAt: string;
-  practiceName: string | null;
-  practiceEmail: string | null;
-};
+import { createDevice } from "./actions";
 
 type Practice = {
   id: string;
@@ -26,7 +13,7 @@ type Practice = {
 
 export const dynamic = "force-dynamic";
 
-async function loadDevices(): Promise<{ devices: Device[]; error: string | null }> {
+async function loadDevices(): Promise<{ devices: MasterDevice[]; error: string | null }> {
   const baseUrl = process.env.SERENE_SCENE_API_BASE_URL;
   const adminKey = process.env.SERENE_SCENE_ADMIN_API_KEY;
 
@@ -45,7 +32,7 @@ async function loadDevices(): Promise<{ devices: Device[]; error: string | null 
     if (!res.ok) {
       return { devices: [], error: `Devices API returned ${res.status}.` };
     }
-    const data = (await res.json()) as { devices: Device[] };
+    const data = (await res.json()) as { devices: MasterDevice[] };
     return { devices: data.devices ?? [], error: null };
   } catch {
     return { devices: [], error: "Could not reach the Serene Scene API." };
@@ -102,17 +89,6 @@ async function loadPractices(): Promise<Practice[]> {
   } catch {
     return [];
   }
-}
-
-function formatDateTime(value: string | null) {
-  if (!value) return "Never";
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(value));
 }
 
 type PageProps = {
@@ -231,46 +207,7 @@ export default async function MasterDevicesPage({ searchParams }: PageProps) {
         </div>
 
         <div className="overflow-hidden rounded-3xl bg-white text-[#1B3A5B] shadow-2xl">
-          <div className="border-b border-[#1B3A5B]/10 bg-[#F8FAFB] px-5 py-4 font-extrabold">
-            All devices
-          </div>
-          {devices.length === 0 ? (
-            <div className="px-5 py-12 text-center text-[#1B3A5B]/60">No devices yet.</div>
-          ) : (
-            devices.map((device) => (
-              <div
-                key={device.id}
-                className="border-b border-[#1B3A5B]/10 px-5 py-5 last:border-b-0"
-              >
-                <div className="mb-3 font-extrabold">{device.serial}</div>
-                <div className="mb-3 text-xs text-[#1B3A5B]/55">
-                  {device.practiceName ?? "Unknown practice"} · last seen{" "}
-                  {formatDateTime(device.lastSeenAt)}
-                </div>
-                <form action={updateDevice} className="max-w-md">
-                  <input type="hidden" name="id" value={device.id} />
-                  <label className="block text-sm font-bold">
-                    Label
-                    <input
-                      name="label"
-                      defaultValue={device.label ?? ""}
-                      className="mt-1 w-full rounded-xl border border-[#1B3A5B]/20 px-3 py-2"
-                    />
-                  </label>
-                  <button
-                    type="submit"
-                    className="mt-4 rounded-full bg-[#1B3A5B] px-5 py-2 text-sm font-extrabold text-white"
-                  >
-                    Save device
-                  </button>
-                </form>
-                <DevicePracticePlaylist
-                  practiceId={device.practiceId}
-                  slots={playlistsByPractice[device.practiceId] ?? []}
-                />
-              </div>
-            ))
-          )}
+          <DeviceList devices={devices} playlistsByPractice={playlistsByPractice} />
         </div>
       </section>
     </main>

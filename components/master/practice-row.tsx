@@ -10,6 +10,7 @@ import {
   reactivatePractice,
   updatePractice,
 } from "@/app/master/practices/actions";
+import { CollapsibleRow, CollapsibleSection } from "./collapsible";
 import type { MasterPractice, MasterPracticeDevice } from "./practice-list";
 
 function formatDate(value: string) {
@@ -30,59 +31,6 @@ function formatLastSeen(value: string | null) {
   return formatDate(value);
 }
 
-function Chevron({ open }: { open: boolean }) {
-  return (
-    <svg
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      aria-hidden
-      className={`h-5 w-5 shrink-0 text-[#2B8CB8] transition-transform duration-200 ${
-        open ? "rotate-180" : ""
-      }`}
-    >
-      <path
-        fillRule="evenodd"
-        d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
-
-function Section({
-  title,
-  children,
-  defaultOpen = false,
-}: {
-  title: string;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-}) {
-  return (
-    <details
-      className="group rounded-2xl border border-[#1B3A5B]/10 bg-[#F8FAFB]"
-      open={defaultOpen}
-    >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-extrabold text-[#1B3A5B] [&::-webkit-details-marker]:hidden">
-        <span>{title}</span>
-        <svg
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          aria-hidden
-          className="h-5 w-5 shrink-0 text-[#2B8CB8] transition-transform duration-200 group-open:rotate-180"
-        >
-          <path
-            fillRule="evenodd"
-            d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </summary>
-      <div className="border-t border-[#1B3A5B]/10 px-4 py-4">{children}</div>
-    </details>
-  );
-}
-
 type PracticeRowProps = {
   practice: MasterPractice;
   devices: MasterPracticeDevice[];
@@ -97,18 +45,12 @@ export function PracticeRow({ practice, devices, isOpen, onToggle }: PracticeRow
       : null;
 
   return (
-    <article
-      className={`border-b border-[#1B3A5B]/10 last:border-b-0 ${
-        practice.active ? "" : "bg-[#FFF8F0]"
-      }`}
-    >
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-expanded={isOpen}
-        className="flex w-full items-start justify-between gap-3 px-5 py-4 text-left transition-colors hover:bg-[#F8FAFB]/80"
-      >
-        <div className="min-w-0 flex-1">
+    <CollapsibleRow
+      isOpen={isOpen}
+      onToggle={onToggle}
+      className={practice.active ? "" : "bg-[#FFF8F0]"}
+      header={
+        <>
           <h2 className="text-lg font-extrabold text-[#1B3A5B]">{practice.name}</h2>
           <p className="mt-1 text-xs font-semibold text-[#1B3A5B]/55">
             {practice.email} · {practice.deviceCount} device(s) · joined{" "}
@@ -139,21 +81,14 @@ export function PracticeRow({ practice, devices, isOpen, onToggle }: PracticeRow
               </span>
             )}
           </div>
-        </div>
-        <div className="flex shrink-0 items-center gap-2 pt-1">
-          <span className="hidden text-xs font-bold text-[#1B3A5B]/45 sm:inline">
-            {isOpen ? "Collapse" : "Expand"}
-          </span>
-          <Chevron open={isOpen} />
-        </div>
-      </button>
-
-      {isOpen ? (
-        <div className="space-y-4 border-t border-[#1B3A5B]/10 px-5 pb-5 pt-4">
+        </>
+      }
+    >
+      <div className="space-y-4">
           <form action={updatePractice} className="space-y-4">
             <input type="hidden" name="id" value={practice.id} />
 
-            <Section title="Practice info" defaultOpen>
+            <CollapsibleSection title="Practice info" defaultOpen>
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="block text-sm font-bold">
                   Name
@@ -207,9 +142,9 @@ export function PracticeRow({ practice, devices, isOpen, onToggle }: PracticeRow
                   />
                 </label>
               </div>
-            </Section>
+            </CollapsibleSection>
 
-            <Section title="Contact & CRM">
+            <CollapsibleSection title="Contact & CRM">
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="block text-sm font-bold">
                   Primary contact name
@@ -315,9 +250,9 @@ export function PracticeRow({ practice, devices, isOpen, onToggle }: PracticeRow
                   />
                 </label>
               </div>
-            </Section>
+            </CollapsibleSection>
 
-            <Section title={`Devices (${devices.length})`}>
+            <CollapsibleSection title={`Devices (${devices.length})`}>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="text-sm font-semibold text-[#1B3A5B]/70">
                   Tablets registered to this practice
@@ -343,9 +278,9 @@ export function PracticeRow({ practice, devices, isOpen, onToggle }: PracticeRow
                   ))}
                 </ul>
               )}
-            </Section>
+            </CollapsibleSection>
 
-            <Section title="Billing & features">
+            <CollapsibleSection title="Billing & features">
               <label className="block text-sm font-bold">
                 Stripe customer ID
                 <input
@@ -364,7 +299,7 @@ export function PracticeRow({ practice, devices, isOpen, onToggle }: PracticeRow
                   }
                 />
               </div>
-            </Section>
+            </CollapsibleSection>
 
             <button
               type="submit"
@@ -374,7 +309,7 @@ export function PracticeRow({ practice, devices, isOpen, onToggle }: PracticeRow
             </button>
           </form>
 
-          <Section title="Danger zone">
+          <CollapsibleSection title="Danger zone">
             <div className="flex flex-wrap gap-3">
               {practice.active ? (
                 <form action={deactivatePractice}>
@@ -425,9 +360,8 @@ export function PracticeRow({ practice, devices, isOpen, onToggle }: PracticeRow
                 </p>
               ) : null}
             </div>
-          </Section>
-        </div>
-      ) : null}
-    </article>
+          </CollapsibleSection>
+      </div>
+    </CollapsibleRow>
   );
 }

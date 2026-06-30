@@ -1,9 +1,8 @@
 import { redirect } from "next/navigation";
-import { FeatureFlagFields } from "@/components/feature-flag-fields";
+import { SettingsPanel } from "@/components/master/settings-panel";
 import { MasterNav } from "@/components/master-nav";
 import type { FeatureFlags } from "@/lib/feature-flags";
 import { isMasterDashboardAuthenticated } from "@/lib/master-auth";
-import { updateGlobalFeatureFlags } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -98,21 +97,9 @@ export default async function MasterSettingsPage({ searchParams }: PageProps) {
           </div>
         ) : null}
 
-        <form
-          action={updateGlobalFeatureFlags}
-          className="mt-8 overflow-hidden rounded-3xl bg-white p-6 text-[#1B3A5B] shadow-2xl"
-        >
-          <FeatureFlagFields
-            effective={effective}
-            legend="Global defaults (all practices unless overridden)"
-          />
-          <button
-            type="submit"
-            className="mt-6 rounded-full bg-[#2B8CB8] px-5 py-2 text-sm font-extrabold text-white"
-          >
-            Save global features
-          </button>
-        </form>
+        <div className="mt-8">
+          <SettingsPanel effective={effective} />
+        </div>
       </section>
     </main>
   );

@@ -1,21 +1,7 @@
 import { redirect } from "next/navigation";
+import { FeedbackList, type PracticeFeedbackGroup } from "@/components/master/feedback-list";
 import { MasterNav } from "@/components/master-nav";
 import { isMasterDashboardAuthenticated } from "@/lib/master-auth";
-
-type FeedbackEntry = {
-  id: string;
-  starRating: number;
-  comment: string | null;
-  deviceLabel: string | null;
-  createdAt: string;
-};
-
-type PracticeFeedbackGroup = {
-  id: string;
-  name: string;
-  email: string;
-  feedback: FeedbackEntry[];
-};
 
 export const dynamic = "force-dynamic";
 
@@ -50,20 +36,6 @@ async function loadFeedback(): Promise<{
   } catch {
     return { practices: [], error: "Could not reach the Serene Scene API." };
   }
-}
-
-function formatWhen(value: string) {
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(value));
-}
-
-function starsLabel(rating: number) {
-  return `${"★".repeat(rating)}${"☆".repeat(5 - rating)} (${rating}/5)`;
 }
 
 export default async function MasterFeedbackPage() {
@@ -107,48 +79,7 @@ export default async function MasterFeedbackPage() {
             No feedback yet. Patients can use Share feedback on a paired tablet.
           </div>
         ) : (
-          <div className="space-y-8">
-            {practices.map((practice) => (
-              <section
-                key={practice.id}
-                className="overflow-hidden rounded-3xl bg-white text-[#1B3A5B] shadow-2xl"
-              >
-                <div className="border-b border-[#1B3A5B]/10 bg-[#F8FAFB] px-5 py-4">
-                  <h2 className="text-xl font-extrabold">{practice.name}</h2>
-                  <p className="mt-1 text-sm text-[#1B3A5B]/60">{practice.email}</p>
-                  <p className="mt-2 text-xs font-extrabold uppercase tracking-wide text-[#1B3A5B]/50">
-                    {practice.feedback.length} submission
-                    {practice.feedback.length === 1 ? "" : "s"}
-                  </p>
-                </div>
-
-                <ul className="divide-y divide-[#1B3A5B]/10">
-                  {practice.feedback.map((entry) => (
-                    <li key={entry.id} className="px-5 py-4">
-                      <div className="flex flex-wrap items-start justify-between gap-2">
-                        <div className="text-lg font-extrabold text-[#E85A9B]">
-                          {starsLabel(entry.starRating)}
-                        </div>
-                        <div className="text-xs font-bold text-[#1B3A5B]/55">
-                          {formatWhen(entry.createdAt)}
-                          {entry.deviceLabel ? ` · ${entry.deviceLabel}` : ""}
-                        </div>
-                      </div>
-                      {entry.comment ? (
-                        <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-[#1B3A5B]/85">
-                          {entry.comment}
-                        </p>
-                      ) : (
-                        <p className="mt-2 text-xs font-bold text-[#1B3A5B]/45">
-                          No comment
-                        </p>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
-          </div>
+          <FeedbackList practices={practices} />
         )}
       </section>
     </main>
