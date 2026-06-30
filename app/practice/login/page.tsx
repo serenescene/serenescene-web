@@ -6,11 +6,11 @@ import { safeRedirectPath } from "@/lib/safe-redirect";
 import { loginPracticeAccount } from "./actions";
 
 type PageProps = {
-  searchParams: Promise<{ error?: string; next?: string }>;
+  searchParams: Promise<{ error?: string; next?: string; reset?: string }>;
 };
 
 export default async function PracticeLoginPage({ searchParams }: PageProps) {
-  const { error, next: nextRaw } = await searchParams;
+  const { error, next: nextRaw, reset } = await searchParams;
   const next = safeRedirectPath(nextRaw, "/practice/dashboard");
 
   const session = await getPracticeSession();
@@ -43,6 +43,11 @@ export default async function PracticeLoginPage({ searchParams }: PageProps) {
         </p>
       }
     >
+      {reset === "1" ? (
+        <div className="mb-4 rounded-2xl border border-emerald-400/40 bg-emerald-400/15 px-4 py-3 text-sm font-bold">
+          Password updated. Sign in with your new password.
+        </div>
+      ) : null}
       {message ? (
         <div className="mb-4 rounded-2xl bg-[#E85A9B]/15 px-4 py-3 text-sm font-bold">{message}</div>
       ) : null}
@@ -69,6 +74,11 @@ export default async function PracticeLoginPage({ searchParams }: PageProps) {
             autoComplete="current-password"
             className="mt-1 w-full rounded-2xl border border-[#1B3A5B]/20 px-4 py-3 outline-none focus:border-[#5BC0DE]"
           />
+          <span className="mt-2 block text-right text-xs font-bold">
+            <Link href="/practice/forgot-password" className="text-[#2B8CB8] underline">
+              Forgot password?
+            </Link>
+          </span>
         </label>
         <button
           type="submit"

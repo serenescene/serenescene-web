@@ -177,6 +177,39 @@ export async function changePracticePassword(
   return { ok: true };
 }
 
+export async function requestPracticePasswordReset(
+  email: string,
+): Promise<{ ok: true } | { error: string }> {
+  const res = await fetch(`${apiBaseUrl()}/auth/forgot-password`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ email }),
+    cache: "no-store",
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    return { error: (data as { error?: string }).error ?? "Could not send reset email" };
+  }
+  return { ok: true };
+}
+
+export async function resetPracticePasswordWithToken(
+  token: string,
+  newPassword: string,
+): Promise<{ ok: true } | { error: string }> {
+  const res = await fetch(`${apiBaseUrl()}/auth/reset-password`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ token, newPassword }),
+    cache: "no-store",
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    return { error: (data as { error?: string }).error ?? "Failed to reset password" };
+  }
+  return { ok: true };
+}
+
 export async function createPracticeBillingPortalSession(token: string) {
   const { res, data } = await practiceAuthFetch(token, "/practices/me/billing-portal", {
     method: "POST",
