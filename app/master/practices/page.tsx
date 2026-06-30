@@ -159,7 +159,7 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
               : params.error === "reactivate"
                 ? "Could not reactivate that practice."
                 : params.error === "delete"
-                  ? "Could not delete that practice."
+                  ? "Could not delete that practice. If it has tablets or session history, deploy the latest API and run migrations, then try again."
                   : "Could not save practice. Check the form and try again."}
           </div>
         ) : null}

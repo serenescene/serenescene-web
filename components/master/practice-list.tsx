@@ -50,6 +50,7 @@ type PracticeListProps = {
 
 export function PracticeList({ practices, devicesByPractice }: PracticeListProps) {
   const [sort, setSort] = useState<SortKey>("name-asc");
+  const [openIds, setOpenIds] = useState<Set<string>>(() => new Set());
 
   const sorted = useMemo(() => {
     const list = [...practices];
@@ -73,24 +74,62 @@ export function PracticeList({ practices, devicesByPractice }: PracticeListProps
     return list;
   }, [practices, sort]);
 
+  function togglePractice(id: string) {
+    setOpenIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function expandAll() {
+    setOpenIds(new Set(sorted.map((practice) => practice.id)));
+  }
+
+  function collapseAll() {
+    setOpenIds(new Set());
+  }
+
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#1B3A5B]/10 bg-[#F8FAFB] px-5 py-4">
-        <span className="font-extrabold">Existing practices</span>
-        <label className="flex items-center gap-2 text-sm font-bold text-[#1B3A5B]/70">
-          Sort by
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as SortKey)}
-            className="rounded-xl border border-[#1B3A5B]/20 bg-white px-3 py-1.5 text-sm font-bold text-[#1B3A5B]"
+        <div>
+          <span className="font-extrabold">Existing practices</span>
+          <p className="mt-1 text-xs font-semibold text-[#1B3A5B]/55">
+            Click a practice row to expand details. All rows start collapsed.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={expandAll}
+            className="rounded-full border border-[#1B3A5B]/15 bg-white px-3 py-1.5 text-xs font-extrabold text-[#1B3A5B]"
           >
-            <option value="name-asc">Name (A–Z)</option>
-            <option value="name-desc">Name (Z–A)</option>
-            <option value="status">Status (active first)</option>
-            <option value="newest">Newest first</option>
-            <option value="oldest">Oldest first</option>
-          </select>
-        </label>
+            Expand all
+          </button>
+          <button
+            type="button"
+            onClick={collapseAll}
+            className="rounded-full border border-[#1B3A5B]/15 bg-white px-3 py-1.5 text-xs font-extrabold text-[#1B3A5B]"
+          >
+            Collapse all
+          </button>
+          <label className="flex items-center gap-2 text-sm font-bold text-[#1B3A5B]/70">
+            Sort by
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortKey)}
+              className="rounded-xl border border-[#1B3A5B]/20 bg-white px-3 py-1.5 text-sm font-bold text-[#1B3A5B]"
+            >
+              <option value="name-asc">Name (A–Z)</option>
+              <option value="name-desc">Name (Z–A)</option>
+              <option value="status">Status (active first)</option>
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+            </select>
+          </label>
+        </div>
       </div>
       {sorted.length === 0 ? (
         <div className="px-5 py-12 text-center text-[#1B3A5B]/60">No practices yet.</div>
@@ -100,6 +139,8 @@ export function PracticeList({ practices, devicesByPractice }: PracticeListProps
             key={practice.id}
             practice={practice}
             devices={devicesByPractice[practice.id] ?? []}
+            isOpen={openIds.has(practice.id)}
+            onToggle={() => togglePractice(practice.id)}
           />
         ))
       )}
