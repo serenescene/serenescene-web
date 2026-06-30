@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FeatureFlagFields } from "@/components/feature-flag-fields";
 import { MasterNav } from "@/components/master-nav";
@@ -26,6 +27,15 @@ type Practice = {
   deviceCount: number;
   active: boolean;
   deactivatedAt: string | null;
+  createdAt: string;
+};
+
+type PracticeDevice = {
+  id: string;
+  practiceId: string;
+  serial: string;
+  label: string | null;
+  lastSeenAt: string | null;
   createdAt: string;
 };
 
@@ -61,12 +71,40 @@ async function loadPractices(): Promise<{ practices: Practice[]; error: string |
   }
 }
 
+async function loadDevices(): Promise<PracticeDevice[]> {
+  const baseUrl = process.env.SERENE_SCENE_API_BASE_URL;
+  const adminKey = process.env.SERENE_SCENE_ADMIN_API_KEY;
+  if (!baseUrl || !adminKey) return [];
+
+  try {
+    const res = await fetch(`${baseUrl.replace(/\/$/, "")}/admin/devices`, {
+      headers: { "x-admin-api-key": adminKey },
+      cache: "no-store",
+    });
+    if (!res.ok) return [];
+    const data = (await res.json()) as { devices: PracticeDevice[] };
+    return data.devices ?? [];
+  } catch {
+    return [];
+  }
+}
+
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en", {
     month: "short",
     day: "numeric",
     year: "numeric",
   }).format(new Date(value));
+}
+
+function formatLastSeen(value: string | null) {
+  if (!value) return "Never seen";
+  const date = new Date(value);
+  const diffMs = Date.now() - date.getTime();
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  if (diffHours < 1) return "Online recently";
+  if (diffHours < 48) return `${diffHours}h ago`;
+  return formatDate(value);
 }
 
 type PageProps = {
@@ -86,7 +124,14 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
   }
 
   const params = await searchParams;
-  const { practices, error } = await loadPractices();
+  const [{ practices, error }, devices] = await Promise.all([
+    loadPractices(),
+    loadDevices(),
+  ]);
+  const devicesByPractice = devices.reduce<Record<string, PracticeDevice[]>>((acc, device) => {
+    (acc[device.practiceId] ??= []).push(device);
+    return acc;
+  }, {});
 
   return (
     <main className="min-h-screen bg-[#07111C] px-6 py-8 text-[#F8FAFB]">
@@ -271,6 +316,36 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
                     <span className="rounded-full bg-amber-100 px-2 py-0.5 font-extrabold text-amber-900">
                       Highly recommended: add Google link
                     </span>
+                  )}
+                </div>
+                <div className="mb-4 rounded-2xl border border-[#1B3A5B]/10 bg-[#F8FAFB] px-4 py-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-extrabold uppercase tracking-wide text-[#1B3A5B]/60">
+                      Devices
+                    </span>
+                    <Link
+                      href="/master/devices"
+                      className="text-xs font-bold text-[#2B8CB8] underline"
+                    >
+                      Manage devices
+                    </Link>
+                  </div>
+                  {(devicesByPractice[practice.id] ?? []).length === 0 ? (
+                    <p className="mt-2 text-sm font-semibold text-[#1B3A5B]/55">
+                      No tablets registered yet.
+                    </p>
+                  ) : (
+                    <ul className="mt-2 space-y-1">
+                      {(devicesByPractice[practice.id] ?? []).map((device) => (
+                        <li
+                          key={device.id}
+                          className="text-sm font-semibold text-[#1B3A5B]/80"
+                        >
+                          {device.label?.trim() || "Tablet"} · {device.serial} · Last seen:{" "}
+                          {formatLastSeen(device.lastSeenAt)}
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
