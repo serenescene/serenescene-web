@@ -63,6 +63,7 @@ export async function updatePractice(formData: FormData) {
   const adminKey = requiredEnv("SERENE_SCENE_ADMIN_API_KEY");
 
   const password = formString(formData, "password");
+  const operatoriesRaw = formString(formData, "operatoriesPlanned");
 
   const res = await fetch(`${baseUrl}/admin/practices/${id}`, {
     method: "PATCH",
@@ -75,6 +76,17 @@ export async function updatePractice(formData: FormData) {
       subscriptionStatus: formString(formData, "subscriptionStatus"),
       googleReviewUrl: formString(formData, "googleReviewUrl") || null,
       stripeCustomerId: formString(formData, "stripeCustomerId") || null,
+      contactName: formString(formData, "contactName") || null,
+      contactPhone: formString(formData, "contactPhone") || null,
+      contactEmail: formString(formData, "contactEmail") || null,
+      addressLine1: formString(formData, "addressLine1") || null,
+      addressLine2: formString(formData, "addressLine2") || null,
+      city: formString(formData, "city") || null,
+      state: formString(formData, "state") || null,
+      postalCode: formString(formData, "postalCode") || null,
+      crmNotes: formString(formData, "crmNotes") || null,
+      crmStage: formString(formData, "crmStage") || null,
+      operatoriesPlanned: operatoriesRaw === "" ? null : Number.parseInt(operatoriesRaw, 10),
       featureFlags: featureFlagsFromFormData(formData),
       ...(password.length >= 8 ? { password } : {}),
     }),
@@ -155,28 +167,31 @@ export async function deletePractice(formData: FormData) {
   }
 
   const id = formString(formData, "id");
-  const expectedName = formString(formData, "expectedName");
   const confirmName = formString(formData, "confirmName");
   if (!id) {
     redirect("/master/practices?error=missing-id");
   }
-  if (!expectedName || expectedName !== confirmName) {
+  if (!confirmName) {
     redirect("/master/practices?error=delete-confirm");
   }
 
   const baseUrl = requiredEnv("SERENE_SCENE_API_BASE_URL").replace(/\/$/, "");
   const adminKey = requiredEnv("SERENE_SCENE_ADMIN_API_KEY");
 
-  const res = await fetch(`${baseUrl}/admin/practices/${id}`, {
-    method: "DELETE",
-    headers: { "x-admin-api-key": adminKey },
+  const res = await fetch(`${baseUrl}/admin/practices/${id}/purge`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-admin-api-key": adminKey,
+    },
+    body: JSON.stringify({ confirmName }),
     cache: "no-store",
   });
 
   if (!res.ok) {
     const body = (await res.json().catch(() => ({}))) as { error?: string };
-    if (body.error?.includes("Deactivate")) {
-      redirect("/master/practices?error=delete-active");
+    if (body.error?.toLowerCase().includes("name did not match")) {
+      redirect("/master/practices?error=delete-confirm");
     }
     redirect("/master/practices?error=delete");
   }
