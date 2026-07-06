@@ -27,7 +27,7 @@ export function SubscribeCheckoutForm({
       ) : null}
 
       <label className="block text-sm font-extrabold text-[#1B3A5B]">
-        Number of operatories (chairs)
+        Quantity of Hardware Bundles
         <select
           name="operatories"
           value={operatories}
@@ -36,7 +36,7 @@ export function SubscribeCheckoutForm({
         >
           {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
             <option key={n} value={n}>
-              {n} operatory{n === 1 ? "" : "ies"}
+              {n} Serene Scene{n === 1 ? "" : "s"}
             </option>
           ))}
         </select>

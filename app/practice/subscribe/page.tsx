@@ -15,7 +15,7 @@ type PageProps = {
 
 function formatSubscribeError(error: string | undefined) {
   if (!error) return null;
-  if (error === "operatories") return "Choose a valid number of operatories.";
+  if (error === "operatories") return "Choose a valid quantity of hardware bundles.";
   try {
     return decodeURIComponent(error);
   } catch {
