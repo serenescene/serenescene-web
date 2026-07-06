@@ -82,7 +82,7 @@ export default async function PracticeSubscribePage({ searchParams }: PageProps)
                   step.title
                 )}
               </p>
-              {"body" in step && step.body ? (
+              {"body" in step && typeof step.body === "string" ? (
                 <p className="mt-1 text-[#F8FAFB]/60">{step.body}</p>
               ) : null}
             </li>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { estimateTotals, formatUsd, PRICING } from "@/lib/marketing-content";
 import { startCheckout } from "@/app/practice/subscribe/actions";
 
@@ -16,13 +16,32 @@ export function SubscribeCheckoutForm({
   canceled = false,
 }: SubscribeCheckoutFormProps) {
   const [operatories, setOperatories] = useState(defaultOperatories);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
   const totals = useMemo(() => estimateTotals(operatories), [operatories]);
+
+  function handleCheckout(formData: FormData) {
+    setCheckoutError(null);
+    startTransition(async () => {
+      const result = await startCheckout(formData);
+      if (!result.ok) {
+        setCheckoutError(result.error);
+        return;
+      }
+      window.location.assign(result.url);
+    });
+  }
 
   return (
     <div className="rounded-3xl bg-white p-6 shadow-xl md:p-8">
       {canceled ? (
         <div className="mb-6 rounded-2xl border border-amber-400/50 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-900">
           Checkout was canceled. You can try again when ready.
+        </div>
+      ) : null}
+      {checkoutError ? (
+        <div className="mb-6 rounded-2xl border border-[#E85A9B]/40 bg-[#E85A9B]/15 px-4 py-3 text-sm font-bold text-rose-900">
+          {checkoutError}
         </div>
       ) : null}
 
@@ -57,13 +76,14 @@ export function SubscribeCheckoutForm({
       </div>
 
       {checkoutEnabled ? (
-        <form action={startCheckout} className="mt-6">
+        <form action={handleCheckout} className="mt-6">
           <input type="hidden" name="operatories" value={operatories} />
           <button
             type="submit"
-            className="w-full rounded-full bg-[#1B3A5B] px-6 py-4 text-base font-extrabold text-white hover:opacity-90"
+            disabled={isPending}
+            className="w-full rounded-full bg-[#1B3A5B] px-6 py-4 text-base font-extrabold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Continue to secure checkout
+            {isPending ? "Opening secure checkout…" : "Continue to secure checkout"}
           </button>
           <p className="mt-3 text-center text-xs font-semibold text-[#1B3A5B]/50">
             Powered by Stripe · Setup + first subscription charge on one checkout

@@ -96,7 +96,7 @@ export default function PricingPage() {
                       step.title
                     )}
                   </p>
-                  {"body" in step && step.body ? (
+                  {"body" in step && typeof step.body === "string" ? (
                     <p className="mt-1 text-sm text-[#1B3A5B]/65">{step.body}</p>
                   ) : null}
                 </div>

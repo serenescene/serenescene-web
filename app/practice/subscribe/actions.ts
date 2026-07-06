@@ -4,7 +4,11 @@ import { redirect } from "next/navigation";
 import { createBillingCheckout } from "@/lib/billing-api";
 import { requirePracticeSession } from "@/lib/practice-auth";
 
-export async function startCheckout(formData: FormData) {
+export type CheckoutActionResult =
+  | { ok: true; url: string }
+  | { ok: false; error: string };
+
+export async function startCheckout(formData: FormData): Promise<CheckoutActionResult> {
   let token: string;
   try {
     ({ token } = await requirePracticeSession());
@@ -14,12 +18,12 @@ export async function startCheckout(formData: FormData) {
 
   const operatories = Number.parseInt(String(formData.get("operatories") ?? "1"), 10);
   if (!Number.isInteger(operatories) || operatories < 1 || operatories > 20) {
-    redirect("/practice/subscribe?error=operatories");
+    return { ok: false, error: "Choose a valid quantity of hardware bundles." };
   }
 
   const result = await createBillingCheckout(token, operatories);
   if ("error" in result) {
-    redirect(`/practice/subscribe?error=${encodeURIComponent(result.error)}`);
+    return { ok: false, error: result.error };
   }
-  redirect(result.url);
+  return { ok: true, url: result.url };
 }
