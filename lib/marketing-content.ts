@@ -33,18 +33,23 @@ export const trustPoints = [
 export const howItWorks = [
   {
     step: "1",
-    title: "We install your operatory kit",
-    body: "We deliver and configure the tablet player, XR glasses, and office Wi‑Fi checklist. Your team gets a short chairside guide.",
+    title: "We configure it",
+    body: "We configure your Serene Scene hardware, software, in-house ads and videos. Staff training is quick and easy.",
   },
   {
     step: "2",
-    title: "Patients escape during treatment",
-    body: "Staff place glasses before the procedure. Calming scenes and audio play on the glasses while your team controls volume and playlist from the tablet.",
+    title: "Your patient uses it",
+    body: "Patients are distracted during treatment. Calming scenes and audio play on the glasses while your team controls volume and playlist from the tablet.",
   },
   {
     step: "3",
-    title: "Your subscription keeps content fresh",
-    body: "Monthly service funds our video library, production updates, and optional in-practice promotional placements — custom clips for your office when you subscribe.",
+    title: "We update the content",
+    body: "Updates push new audiovisual content directly to your device regularly.",
+  },
+  {
+    step: "4",
+    title: "You get the reviews",
+    body: "Following treatment, patients are presented with an option to rate your practice while they're still in the chair — right on the player device.",
   },
 ] as const;
 
