@@ -1,5 +1,5 @@
 export const PRICING = {
-  setupPerOperatory: 1000,
+  setupPerOperatory: 999,
   monthlyPerOperatory: 249,
   termMonths: 24,
   currency: "USD",
@@ -76,29 +76,26 @@ export const pricingPlans = {
   setup: {
     title: "Operatory setup",
     price: PRICING.setupPerOperatory,
-    period: "one-time per chair",
+    period: "per chair",
     description:
-      "Covers XR glasses, tablet player, initial configuration, and our time to install and train your team.",
+      "Includes XR glasses, Android video player, and your in-house ad configuration.",
     includes: [
-      "XR glasses + configured Android player",
-      "On-site or guided remote setup",
-      "Kiosk lock-down for clinic floor",
-      "Staff quick-start guide",
+      "XR glasses",
+      "Android video player",
+      "Your in-house ad configuration",
+      "Simple video-guided set-up",
     ],
   },
   subscription: {
-    title: "Serene Scene service",
+    title: "Serene Scene Video Subscription",
     price: PRICING.monthlyPerOperatory,
-    period: "per operatory / month",
+    period: "per chair / month",
     description:
-      "Funds ongoing video production, library updates, device support, practice portal access, and optional custom in-practice ad placements.",
+      "Includes video library updates, hardware support, and practice portal access.",
     includes: [
-      "Curated calming video library + updates",
-      "Practice-specific promotional videos (subscriber)",
-      "Playlist & device dashboard",
-      "Patient feedback summaries",
-      "App updates via Google Play",
-      "Email support",
+      "Curated library of videos selected for maximum patient comfort",
+      "Patient rating dashboard",
+      "Automatic app updates via Google Play",
     ],
   },
 } as const;
