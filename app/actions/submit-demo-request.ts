@@ -1,7 +1,12 @@
 "use server";
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+
+function apiBaseUrl() {
+  const base = process.env.SERENE_SCENE_API_BASE_URL?.trim();
+  if (!base) return null;
+  return base.replace(/\/$/, "");
+}
 
 export async function submitDemoRequest(formData: FormData) {
   const practiceName = String(formData.get("practiceName") ?? "").trim();
@@ -14,21 +19,23 @@ export async function submitDemoRequest(formData: FormData) {
     redirect("/?demoError=missing");
   }
 
-  const h = await headers();
-  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? "http";
-  const base = `${proto}://${host}`;
+  const baseUrl = apiBaseUrl();
+  if (!baseUrl) {
+    redirect("/?demoError=send");
+  }
 
-  const res = await fetch(`${base}/api/contact`, {
+  const res = await fetch(`${baseUrl}/leads/demo`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "content-type": "application/json" },
     body: JSON.stringify({
       practiceName,
       contactName,
       email,
-      operatories,
-      message,
+      operatories: operatories || null,
+      message: message || null,
+      source: "homepage_demo",
     }),
+    cache: "no-store",
   });
 
   if (!res.ok) {

@@ -103,7 +103,7 @@ export const pricingPlans = {
 export const funnelSteps = [
   { n: 1, title: "Create practice account", href: "/practice/signup" },
   { n: 2, title: "Pay setup + start subscription", href: "/practice/subscribe" },
-  { n: 3, title: "We schedule install", body: "We coordinate delivery and setup with your team." },
+  { n: 3, title: "Hardware arrives within 2 weeks, configured and ready to go — right out of the box!" },
   { n: 4, title: "Go live chairside", href: "/practice/help" },
 ] as const;
 
