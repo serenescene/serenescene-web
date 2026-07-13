@@ -20,8 +20,25 @@ export const hero = {
   subhead:
     "Serene Scene is a turnkey XR comfort system for dental operatories — calming video on lightweight glasses, simple staff controls, and optional Google review prompts when patients are at ease.",
   primaryCta: { label: "View pricing & subscribe", href: "/pricing" },
-  secondaryCta: { label: "Book a demo", href: "#demo-request" },
+  secondaryCta: { label: "See it in action", href: "#see-it-in-action" },
 };
+
+/** Explainer video + poster — set NEXT_PUBLIC_EXPLAINER_VIDEO_URL in Vercel (YouTube, Vimeo, or MP4). */
+export const seeItInAction = {
+  id: "see-it-in-action",
+  eyebrow: "See it in action",
+  headline: "Calm patients. Confident staff.",
+  subhead:
+    "Serene Scene in the operatory — lightweight XR glasses, a chairside tablet, and calming content patients actually enjoy.",
+  /** Drop a glamour shot at public/see-it-in-action-poster.jpg (or .webp). */
+  posterImage: "/see-it-in-action-poster.jpg",
+  videoUrl: process.env.NEXT_PUBLIC_EXPLAINER_VIDEO_URL?.trim() ?? "",
+  highlights: [
+    "XR glasses stay comfortable through the visit",
+    "Staff control volume and playlist from the tablet",
+    "Optional review prompt when patients are at ease",
+  ],
+} as const;
 
 export const trustPoints = [
   "Not a medical device — wellness & distraction positioning",

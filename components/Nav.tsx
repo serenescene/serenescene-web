@@ -39,10 +39,10 @@ export function Nav() {
           Get started
         </a>
         <a
-          href="#contact"
+          href="#see-it-in-action"
           className="bg-[#E85A9B] text-white px-5 py-2 rounded-full font-semibold hover:opacity-90"
         >
-          Request Demo
+          See it in action
         </a>
       </div>
     </nav>

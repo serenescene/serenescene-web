@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { DemoRequestForm } from "@/components/DemoRequestForm";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { MarketingNav } from "@/components/marketing/MarketingNav";
 import { ProductUpdatesBanner } from "@/components/marketing/ProductUpdatesBanner";
+import { SeeItInActionSection } from "@/components/marketing/SeeItInActionSection";
 import {
   benefits,
   faq,
@@ -14,15 +14,7 @@ import {
   trustPoints,
 } from "@/lib/marketing-content";
 
-type HomeProps = {
-  searchParams: Promise<{ demoSent?: string; demoError?: string }>;
-};
-
-export default async function Home({ searchParams }: HomeProps) {
-  const params = await searchParams;
-  const demoSent = params.demoSent === "1";
-  const demoError = params.demoError;
-
+export default async function Home() {
   return (
     <main className="min-h-screen bg-[#F8FAFB] text-[#1B3A5B]">
       <ProductUpdatesBanner source="homepage_banner" />
@@ -66,6 +58,8 @@ export default async function Home({ searchParams }: HomeProps) {
           </ul>
         </div>
       </section>
+
+      <SeeItInActionSection />
 
       {/* Benefits */}
       <section className="mx-auto max-w-6xl px-6 py-20">
@@ -159,46 +153,6 @@ export default async function Home({ searchParams }: HomeProps) {
               More questions on the pricing page
             </Link>
           </p>
-        </div>
-      </section>
-
-      {/* Demo request */}
-      <section
-        id="demo-request"
-        className="border-t border-[#1B3A5B]/10 py-20"
-        aria-labelledby="demo-request-heading"
-      >
-        <div className="mx-auto max-w-3xl px-6 text-center">
-          <h2 id="demo-request-heading" className="text-3xl font-extrabold md:text-4xl">
-            Request a demo
-          </h2>
-          <p className="mt-3 text-lg text-[#1B3A5B]/70">
-            Tell us about your practice and we&apos;ll follow up within one business day.
-          </p>
-          {demoSent ? (
-            <p className="mt-8 rounded-2xl bg-[#5BC0DE]/15 px-4 py-3 font-bold">
-              Thanks — your demo request was received.
-            </p>
-          ) : null}
-          {demoError === "missing" ? (
-            <p className="mb-6 mt-8 rounded-2xl bg-[#E85A9B]/15 px-4 py-3 font-bold">
-              Please fill in practice name, contact name, and email.
-            </p>
-          ) : null}
-          {demoError === "send" ? (
-            <p className="mb-6 mt-8 rounded-2xl bg-[#E85A9B]/15 px-4 py-3 font-bold">
-              Something went wrong. Email{" "}
-              <a href="mailto:hello@serenescene.app" className="underline">
-                hello@serenescene.app
-              </a>{" "}
-              directly.
-            </p>
-          ) : null}
-          {!demoSent ? (
-            <div className="mt-8 text-left">
-              <DemoRequestForm />
-            </div>
-          ) : null}
         </div>
       </section>
 
