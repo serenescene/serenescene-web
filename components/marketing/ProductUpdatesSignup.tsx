@@ -48,26 +48,15 @@ export function ProductUpdatesSignup({
 
   return (
     <div className={isFooter ? "mt-6" : ""}>
-      <p
-        className={
-          isFooter
-            ? "text-sm font-semibold text-[#1B3A5B]"
-            : "text-lg text-[#1B3A5B]/70"
-        }
-      >
-        {isFooter ? "Product updates" : "Sign up for product updates"}
-      </p>
-      {!isFooter ? (
-        <p className="mt-2 text-sm text-[#1B3A5B]/60">
-          Occasional news on features and content — one field, no spam.
-        </p>
+      {isFooter ? (
+        <p className="text-sm font-semibold text-[#1B3A5B]">Get Product Updates</p>
       ) : null}
       <form
         action={handleSubmit}
         className={
           isFooter
             ? "mx-auto mt-3 flex max-w-md flex-col gap-2 sm:flex-row"
-            : "mx-auto mt-6 flex max-w-lg flex-col gap-3 sm:flex-row"
+            : "mx-auto flex max-w-lg flex-col gap-3 sm:flex-row"
         }
       >
         <input type="hidden" name="source" value={source} />
@@ -97,7 +86,7 @@ export function ProductUpdatesSignup({
               : "shrink-0 rounded-full bg-[#E85A9B] px-6 py-3 font-semibold text-white hover:opacity-90 disabled:opacity-60"
           }
         >
-          {pending ? "…" : "Subscribe"}
+          {pending ? "…" : "Sign up"}
         </button>
       </form>
       {error ? (

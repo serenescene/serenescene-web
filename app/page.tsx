@@ -84,6 +84,30 @@ export default async function Home({ searchParams }: HomeProps) {
         </div>
       </section>
 
+      {/* Product updates */}
+      <section
+        className="bg-[#07111C] px-6 py-16 text-[#F8FAFB]"
+        aria-labelledby="product-updates-heading"
+      >
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#5BC0DE]">
+            Stay in the loop
+          </p>
+          <h2
+            id="product-updates-heading"
+            className="mt-3 text-3xl font-extrabold md:text-4xl"
+          >
+            Get product updates
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-lg text-[#F8FAFB]/75">
+            Be first to hear about new comfort content and features — one field, no spam.
+          </p>
+          <div className="mt-6 rounded-3xl bg-white p-6 shadow-2xl md:p-8">
+            <ProductUpdatesSignup source="homepage" variant="inline" />
+          </div>
+        </div>
+      </section>
+
       {/* How it works */}
       <section id="how-it-works" className="border-y border-[#1B3A5B]/10 bg-white py-20">
         <div className="mx-auto max-w-6xl px-6">
@@ -158,19 +182,6 @@ export default async function Home({ searchParams }: HomeProps) {
               More questions on the pricing page
             </Link>
           </p>
-        </div>
-      </section>
-
-      {/* Product updates */}
-      <section
-        className="border-t border-[#1B3A5B]/10 bg-white py-16"
-        aria-labelledby="product-updates-heading"
-      >
-        <div className="mx-auto max-w-3xl px-6 text-center">
-          <h2 id="product-updates-heading" className="text-2xl font-extrabold md:text-3xl">
-            Stay in the loop
-          </h2>
-          <ProductUpdatesSignup source="homepage" variant="inline" />
         </div>
       </section>
 
