@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { ProductUpdatesSignup } from "@/components/marketing/ProductUpdatesSignup";
 
 export function MarketingFooter() {
   return (
     <footer className="border-t border-[#1B3A5B]/10 bg-white py-10">
       <div className="mx-auto max-w-7xl px-6 text-center text-sm text-[#1B3A5B]/60">
-        <p className="font-semibold text-[#1B3A5B]">
+        <ProductUpdatesSignup source="footer" variant="footer" />
+        <p className="mt-8 font-semibold text-[#1B3A5B]">
           <Link href="/pricing" className="hover:text-[#2B8CB8]">
             Pricing
           </Link>

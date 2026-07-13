@@ -2,6 +2,7 @@ import Link from "next/link";
 import { DemoRequestForm } from "@/components/DemoRequestForm";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { MarketingNav } from "@/components/marketing/MarketingNav";
+import { ProductUpdatesSignup } from "@/components/marketing/ProductUpdatesSignup";
 import {
   benefits,
   faq,
@@ -157,6 +158,19 @@ export default async function Home({ searchParams }: HomeProps) {
               More questions on the pricing page
             </Link>
           </p>
+        </div>
+      </section>
+
+      {/* Product updates */}
+      <section
+        className="border-t border-[#1B3A5B]/10 bg-white py-16"
+        aria-labelledby="product-updates-heading"
+      >
+        <div className="mx-auto max-w-3xl px-6 text-center">
+          <h2 id="product-updates-heading" className="text-2xl font-extrabold md:text-3xl">
+            Stay in the loop
+          </h2>
+          <ProductUpdatesSignup source="homepage" variant="inline" />
         </div>
       </section>
 
