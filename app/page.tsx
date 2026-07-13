@@ -2,7 +2,7 @@ import Link from "next/link";
 import { DemoRequestForm } from "@/components/DemoRequestForm";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { MarketingNav } from "@/components/marketing/MarketingNav";
-import { ProductUpdatesSignup } from "@/components/marketing/ProductUpdatesSignup";
+import { ProductUpdatesBanner } from "@/components/marketing/ProductUpdatesBanner";
 import {
   benefits,
   faq,
@@ -25,6 +25,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <main className="min-h-screen bg-[#F8FAFB] text-[#1B3A5B]">
+      <ProductUpdatesBanner source="homepage_banner" />
       <MarketingNav />
 
       {/* Hero */}
@@ -81,30 +82,6 @@ export default async function Home({ searchParams }: HomeProps) {
               <p className="mt-2 text-[#1B3A5B]/75">{b.body}</p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* Product updates */}
-      <section
-        className="bg-[#07111C] px-6 py-16 text-[#F8FAFB]"
-        aria-labelledby="product-updates-heading"
-      >
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#5BC0DE]">
-            Stay in the loop
-          </p>
-          <h2
-            id="product-updates-heading"
-            className="mt-3 text-3xl font-extrabold md:text-4xl"
-          >
-            Get product updates
-          </h2>
-          <p className="mx-auto mt-3 max-w-xl text-lg text-[#F8FAFB]/75">
-            Be first to hear about new comfort content and features — one field, no spam.
-          </p>
-          <div className="mt-6 rounded-3xl bg-white p-6 shadow-2xl md:p-8">
-            <ProductUpdatesSignup source="homepage" variant="inline" />
-          </div>
         </div>
       </section>
 

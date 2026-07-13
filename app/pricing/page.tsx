@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { MarketingNav } from "@/components/marketing/MarketingNav";
+import { ProductUpdatesBanner } from "@/components/marketing/ProductUpdatesBanner";
 import {
   estimateTotals,
   faq,
@@ -15,6 +16,7 @@ export default function PricingPage() {
 
   return (
     <main className="min-h-screen bg-[#F8FAFB] text-[#1B3A5B]">
+      <ProductUpdatesBanner source="pricing_banner" />
       <MarketingNav />
 
       <section className="mx-auto max-w-5xl px-6 py-16 text-center">

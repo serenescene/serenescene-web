@@ -78,6 +78,18 @@ export function SubscribeCheckoutForm({
       {checkoutEnabled ? (
         <form action={handleCheckout} className="mt-6">
           <input type="hidden" name="operatories" value={operatories} />
+          <label className="mb-4 flex cursor-pointer items-start gap-3 rounded-2xl bg-[#F8FAFB] p-4 text-sm font-semibold text-[#1B3A5B]/80">
+            <input
+              type="checkbox"
+              name="productUpdatesOptIn"
+              defaultChecked
+              className="mt-0.5 h-4 w-4 shrink-0 accent-[#2B8CB8]"
+            />
+            <span>
+              Email me Serene Scene product updates — new comfort content and features. No spam;
+              unsubscribe anytime.
+            </span>
+          </label>
           <button
             type="submit"
             disabled={isPending}
