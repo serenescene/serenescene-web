@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FeatureFlagFields } from "@/components/feature-flag-fields";
 import { CRM_STAGE_LABELS, CRM_STAGES } from "@/lib/practice-crm";
 import { SUBSCRIPTION_STATUSES, SUBSCRIPTION_STATUS_LABELS } from "@/lib/subscription-tiers";
+import { deleteDevice } from "@/app/master/devices/actions";
 import {
   deactivatePractice,
   deletePractice,
@@ -252,34 +253,6 @@ export function PracticeRow({ practice, devices, isOpen, onToggle }: PracticeRow
               </div>
             </CollapsibleSection>
 
-            <CollapsibleSection title={`Devices (${devices.length})`}>
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-sm font-semibold text-[#1B3A5B]/70">
-                  Tablets registered to this practice
-                </span>
-                <Link
-                  href="/master/devices"
-                  className="text-xs font-bold text-[#2B8CB8] underline"
-                >
-                  Manage devices
-                </Link>
-              </div>
-              {devices.length === 0 ? (
-                <p className="mt-2 text-sm font-semibold text-[#1B3A5B]/55">
-                  No tablets registered yet.
-                </p>
-              ) : (
-                <ul className="mt-2 space-y-1">
-                  {devices.map((device) => (
-                    <li key={device.id} className="text-sm font-semibold text-[#1B3A5B]/80">
-                      {device.label?.trim() || "Tablet"} · {device.serial} · Last seen:{" "}
-                      {formatLastSeen(device.lastSeenAt)}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </CollapsibleSection>
-
             <CollapsibleSection title="Billing & features">
               <label className="block text-sm font-bold">
                 Stripe customer ID
@@ -308,6 +281,50 @@ export function PracticeRow({ practice, devices, isOpen, onToggle }: PracticeRow
               Save practice
             </button>
           </form>
+
+          <CollapsibleSection title={`Devices (${devices.length})`}>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="text-sm font-semibold text-[#1B3A5B]/70">
+                Tablets registered to this practice
+              </span>
+              <Link
+                href="/master/devices"
+                className="text-xs font-bold text-[#2B8CB8] underline"
+              >
+                Manage devices
+              </Link>
+            </div>
+            {devices.length === 0 ? (
+              <p className="mt-2 text-sm font-semibold text-[#1B3A5B]/55">
+                No tablets registered yet.
+              </p>
+            ) : (
+              <ul className="mt-2 space-y-2">
+                {devices.map((device) => (
+                  <li
+                    key={device.id}
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-[#F8FAFB] px-3 py-2 text-sm font-semibold text-[#1B3A5B]/80"
+                  >
+                    <span>
+                      {device.label?.trim() || "Tablet"} · {device.serial} · Last seen:{" "}
+                      {formatLastSeen(device.lastSeenAt)}
+                    </span>
+                    <form action={deleteDevice} className="flex flex-wrap items-end gap-2">
+                      <input type="hidden" name="id" value={device.id} />
+                      <input type="hidden" name="confirmSerial" value={device.serial} />
+                      <input type="hidden" name="redirectTo" value="practices" />
+                      <button
+                        type="submit"
+                        className="rounded-full bg-rose-100 px-3 py-1 text-xs font-extrabold text-rose-800 hover:bg-rose-200"
+                      >
+                        Unassign
+                      </button>
+                    </form>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CollapsibleSection>
 
           <CollapsibleSection title="Danger zone">
             <div className="flex flex-wrap gap-3">

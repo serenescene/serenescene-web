@@ -146,6 +146,11 @@ export default async function MasterPracticesPage({ searchParams }: PageProps) {
             Practice permanently deleted.
           </div>
         ) : null}
+        {params.deleted === "device" ? (
+          <div className="mb-6 rounded-2xl border border-emerald-400/40 bg-emerald-400/15 p-4 text-sm font-bold">
+            Device unassigned. The serial can be registered again.
+          </div>
+        ) : null}
         {params.error === "delete-confirm" ? (
           <div className="mb-6 rounded-2xl border border-[#E85A9B]/40 bg-[#E85A9B]/15 p-4 text-sm font-bold">
             Practice name did not match. Deletion was cancelled.

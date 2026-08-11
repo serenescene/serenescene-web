@@ -92,6 +92,7 @@ type CollapsibleRowProps = {
   isOpen: boolean;
   onToggle: () => void;
   header: React.ReactNode;
+  leading?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
 };
@@ -100,25 +101,29 @@ export function CollapsibleRow({
   isOpen,
   onToggle,
   header,
+  leading,
   children,
   className = "",
 }: CollapsibleRowProps) {
   return (
     <article className={`border-b border-[#1B3A5B]/10 last:border-b-0 ${className}`}>
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-expanded={isOpen}
-        className="flex w-full items-start justify-between gap-3 px-5 py-4 text-left transition-colors hover:bg-[#F8FAFB]/80"
-      >
-        <div className="min-w-0 flex-1">{header}</div>
-        <div className="flex shrink-0 items-center gap-2 pt-1">
-          <span className="hidden text-xs font-bold text-[#1B3A5B]/45 sm:inline">
-            {isOpen ? "Collapse" : "Expand"}
-          </span>
-          <Chevron open={isOpen} />
-        </div>
-      </button>
+      <div className="flex items-start gap-2 px-5 py-4 transition-colors hover:bg-[#F8FAFB]/80">
+        {leading ? <div className="shrink-0 pt-1">{leading}</div> : null}
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={isOpen}
+          className="flex min-w-0 flex-1 items-start justify-between gap-3 text-left"
+        >
+          <div className="min-w-0 flex-1">{header}</div>
+          <div className="flex shrink-0 items-center gap-2 pt-1">
+            <span className="hidden text-xs font-bold text-[#1B3A5B]/45 sm:inline">
+              {isOpen ? "Collapse" : "Expand"}
+            </span>
+            <Chevron open={isOpen} />
+          </div>
+        </button>
+      </div>
       {isOpen ? (
         <div className="border-t border-[#1B3A5B]/10 px-5 pb-5 pt-4">{children}</div>
       ) : null}

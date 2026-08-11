@@ -1,4 +1,4 @@
-import { duplicatePlaylistSlot } from "@/app/master/devices/actions";
+import { deletePlaylistSlot, duplicatePlaylistSlot } from "@/app/master/devices/actions";
 
 export type PracticePlaylistSlot = {
   slotId: string;
@@ -63,16 +63,28 @@ export function DevicePracticePlaylist({
                     {!slot.enabled ? " · Disabled" : ""}
                   </div>
                 </div>
-                <form action={duplicatePlaylistSlot}>
-                  <input type="hidden" name="practiceId" value={practiceId} />
-                  <input type="hidden" name="slotId" value={slot.slotId} />
-                  <button
-                    type="submit"
-                    className="rounded-full bg-[#5BC0DE]/35 px-3 py-1 text-xs font-extrabold text-[#1B3A5B] hover:bg-[#5BC0DE]/55"
-                  >
-                    Duplicate
-                  </button>
-                </form>
+                <div className="flex flex-wrap items-center gap-2">
+                  <form action={duplicatePlaylistSlot}>
+                    <input type="hidden" name="practiceId" value={practiceId} />
+                    <input type="hidden" name="slotId" value={slot.slotId} />
+                    <button
+                      type="submit"
+                      className="rounded-full bg-[#5BC0DE]/35 px-3 py-1 text-xs font-extrabold text-[#1B3A5B] hover:bg-[#5BC0DE]/55"
+                    >
+                      Duplicate
+                    </button>
+                  </form>
+                  <form action={deletePlaylistSlot}>
+                    <input type="hidden" name="practiceId" value={practiceId} />
+                    <input type="hidden" name="slotId" value={slot.slotId} />
+                    <button
+                      type="submit"
+                      className="rounded-full bg-rose-100 px-3 py-1 text-xs font-extrabold text-rose-800 hover:bg-rose-200"
+                    >
+                      Remove
+                    </button>
+                  </form>
+                </div>
               </li>
             );
           })}

@@ -92,7 +92,7 @@ async function loadPractices(): Promise<Practice[]> {
 }
 
 type PageProps = {
-  searchParams: Promise<{ saved?: string; error?: string }>;
+  searchParams: Promise<{ saved?: string; error?: string; deleted?: string }>;
 };
 
 export default async function MasterDevicesPage({ searchParams }: PageProps) {
@@ -139,6 +139,16 @@ export default async function MasterDevicesPage({ searchParams }: PageProps) {
             Device saved.
           </div>
         ) : null}
+        {params.deleted === "1" ? (
+          <div className="mb-6 rounded-2xl border border-emerald-400/40 bg-emerald-400/15 p-4 text-sm font-bold">
+            Device assignment deleted. The serial can be registered again.
+          </div>
+        ) : null}
+        {params.deleted === "bulk" ? (
+          <div className="mb-6 rounded-2xl border border-emerald-400/40 bg-emerald-400/15 p-4 text-sm font-bold">
+            Selected device assignments deleted.
+          </div>
+        ) : null}
         {params.saved === "playlist" ? (
           <div className="mb-6 rounded-2xl border border-emerald-400/40 bg-emerald-400/15 p-4 text-sm font-bold">
             Playlist updated. Tablets will see the change after Settings → Refresh playlist.
@@ -151,7 +161,13 @@ export default async function MasterDevicesPage({ searchParams }: PageProps) {
         ) : null}
         {params.error && params.error !== "playlist" ? (
           <div className="mb-6 rounded-2xl border border-[#E85A9B]/40 bg-[#E85A9B]/15 p-4 text-sm font-bold">
-            Could not save device. Check the form and try again.
+            {params.error === "delete-confirm"
+              ? "Confirmation did not match. Type the serial (or DELETE for bulk) exactly."
+              : params.error === "delete-none"
+                ? "Select at least one device to delete."
+                : params.error === "delete"
+                  ? "Could not delete that device. Try again after the latest API is deployed."
+                  : "Could not save device. Check the form and try again."}
           </div>
         ) : null}
 
@@ -207,7 +223,11 @@ export default async function MasterDevicesPage({ searchParams }: PageProps) {
         </div>
 
         <div className="overflow-hidden rounded-3xl bg-white text-[#1B3A5B] shadow-2xl">
-          <DeviceList devices={devices} playlistsByPractice={playlistsByPractice} />
+          <DeviceList
+            devices={devices}
+            practices={practices}
+            playlistsByPractice={playlistsByPractice}
+          />
         </div>
       </section>
     </main>
